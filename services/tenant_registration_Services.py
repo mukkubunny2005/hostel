@@ -1,7 +1,6 @@
 from sqlalchemy.orm import Session
 from models.tenant_registration_models import *
 from settings.dependencies import *
-from database_pkg.session import get_db
 from schemas.tenant_Registration_schemas import (
     TenantRegistration,
     TenantStudent,
@@ -22,6 +21,7 @@ async def create_tenant(db: Session, tenant_create:TenantCreate, uuid, hostel_id
     db.add(tenant)
     db.commit()
     db.refresh(tenant)
+    
     necessity = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == hostel_id).filter(TenantRegistration.tenant_id == tenant_id).filter(TenantRegistration.necessity)
     match necessity:
             case NecessityEnum.Student:
@@ -63,7 +63,7 @@ async def add_employee_details(db: Session, tenant_employee_create:TenantEmploye
 
 def add_self_employed(db: Session, tenant_Self_employee_create:TenantSelfEmployedCreate) -> TenantSelfEmployed:
     self_emp = TenantSelfEmployed(
-        tenant_Self_employee_create.model_dump(),
+        **tenant_Self_employee_create.model_dump(),
         govt_id_proof = tenant_Self_employee_create.govt_id_proof.read()
     )
     db.add(self_emp)
