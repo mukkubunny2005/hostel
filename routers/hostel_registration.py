@@ -2,7 +2,6 @@ from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
 from database_pkg.session import get_db
 from typing import Annotated
-from pydantic import BaseModel, Field
 from models.hostel_registration_models import *
 from models.tenant_Registration_models import *
 from schemas.hostel_registration_schemas import *
