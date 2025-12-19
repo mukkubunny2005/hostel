@@ -3,7 +3,7 @@ from typing import Optional
 
 class UserCreate(BaseModel):
 	username: str = Field(..., min_length=3, max_length=50)
-	email: EmailStr
+	email: EmailStr = Field(...,)
 	first_name: Optional[str] = Field(None, max_length=200)
 	last_name: Optional[str] = Field(None, max_length=200)
 	password: str = Field(..., min_length=6)

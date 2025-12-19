@@ -33,10 +33,10 @@ class TenantCreate(BaseModel):
 
     govt_id_file: UploadFile = Depends(validate_file_security),
     
-    necessity: NecessityEnum = Form(...),
+    necessity: NecessityEnum = Form(...,),
 
-class TenantStudentCreate(BaseModel):
-    hostel_id: str
+class TenantStudentCreate(BaseModel, Form):
+    hostel_id: str 
     tenant_id: str
     studying_at: str
     student_id_number: str
@@ -51,7 +51,7 @@ class TenantStudentCreate(BaseModel):
         orm_mode = True
 
 
-class TenantEmployeeCreate(BaseModel):
+class TenantEmployeeCreate(BaseModel, Form):
     tenant_id: str
     company_name: str
     employee_id_number: str
@@ -65,7 +65,7 @@ class TenantEmployeeCreate(BaseModel):
         extra = "forbid"
         orm_mode = True
 
-class TenantSelfEmployedCreate(BaseModel):
+class TenantSelfEmployedCreate(BaseModel, Form):
     tenant_id: str
     occupation: str
     phone_number: int = Path(lt=10)
@@ -75,7 +75,7 @@ class TenantSelfEmployedCreate(BaseModel):
         extra = "forbid"
         orm_mode = True
 
-class TenantOtherCreate(BaseModel):
+class TenantOtherCreate(BaseModel, Form):
     tenant_id: str
     description: str
     phone_number: int = Path(lt=10)
