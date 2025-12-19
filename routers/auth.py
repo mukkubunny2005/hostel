@@ -9,8 +9,8 @@ from core.security import (
     get_current_user,
     oauth2_bearer,
 )
-from schemas.auth_schemas import UserCreate, Token, UserVerification, UserOut
-from models.auth_models import Users
+from models.auth_models import UserCreate, Token, UserVerification, UserOut
+from schemas.auth_schemas import Users
 from services import auth_services as auth_services
 
 

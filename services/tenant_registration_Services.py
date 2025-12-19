@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
-from schemas.tenant_registration_schemas import *
+from models.tenant_registration_models import *
 from settings.dependencies import *
 from database_pkg.session import get_db
-from models.tenant_Registration_models import (
+from schemas.tenant_Registration_schemas import (
     TenantRegistration,
     TenantStudent,
     TenantEmployee,

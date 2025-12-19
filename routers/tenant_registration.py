@@ -1,17 +1,15 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
 from sqlalchemy.orm import Session
 from database_pkg.session import get_db
-from models.hostel_registration_models import GenderEnum
-from models.tenant_Registration_models import GovtIDEnum, NecessityEnum, FoodEnum, RoomEnum
 from services import tenant_registration_Services as tenant_services
-from schemas.tenant_registration_schemas import *
+from models.tenant_registration_models import *
 from typing import Annotated
 router = APIRouter()
 import uuid
 from sqlalchemy.exc import SQLAlchemyError
 from services.auth_services import *
 from services.tenant_registration_Services import *
-from models.auth_models import *
+from schemas.auth_schemas import *
 from services.hostel_registration_services import *
 from core.security import *
 

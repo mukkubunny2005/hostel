@@ -1,7 +1,7 @@
 from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
-from schemas.hostel_registration_schemas import *
+from models.hostel_registration_models import *
 from models.hostel_registration_models import Hostel, Menu, WifiScreens
 
 

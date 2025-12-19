@@ -3,13 +3,13 @@ from sqlalchemy.orm import Session
 from database_pkg.session import get_db
 from typing import Annotated
 from models.hostel_registration_models import *
-from models.tenant_Registration_models import *
-from schemas.hostel_registration_schemas import *
+from schemas.tenant_Registration_schemas import *
+from models.hostel_registration_models import *
 import uuid
 from sqlalchemy.exc import SQLAlchemyError
 
 from services import hostel_registration_services as hostel_services
-from models.auth_models import *
+from schemas.auth_schemas import *
 router = APIRouter()
 
 

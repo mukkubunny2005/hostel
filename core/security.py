@@ -9,7 +9,7 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 
 from database_pkg.session import get_db
-from models.auth_models import Users
+from schemas.auth_schemas import Users
 from pwdlib import PasswordHash
 
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
