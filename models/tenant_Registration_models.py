@@ -1,94 +1,86 @@
-from sqlalchemy import Column, Integer, String, Boolean, Enum, DECIMAL, ForeignKey, LargeBinary, Date
-from database_pkg.database import Base
-import enum
-from models.hostel_registration_models import GenderEnum
+from pydantic import BaseModel
+from fastapi import APIRouter, Depends, UploadFile, File, Form, Path
+import datetime
+from typing import Optional
+from models.tenant_Registration_models import *
+import os
+from settings.dependencies import *
 
-import uuid
-class GovtIDEnum(str, enum.Enum):
-    Aadhar = "Aadhar"
-    PAN = "PAN"
-    VoterID = "VoterID"
-
-class NecessityEnum(str, enum.Enum):
-    Student = "Student"
-    Employee = "Employee"
-    SelfEmployment = "Self Employee"
-    Other = "Other"
-
-class FoodEnum(str, enum.Enum):
-    Veg = "Veg"
-    NonVeg = "Non Veg"
-    Both = "Both"
-class RoomEnum(str, enum.Enum):
-    AC = "AC"
-    NONAC = "Non AC"
-
-class TenantRegistration(Base):
-    __tablename__ = "tenant_registration_form"
-    __table_args__ = {"schema": "tenant"}
-    hostel_id = Column(String(225), unique=True, primary_key=True)
-    tenant_id = Column(String(225), primary_key=True)
-    first_name = Column(String(20), nullable=False)
-    last_name = Column(String(20), nullable=False)
-    phone_number = Column(String(15), nullable=False)
-    father_name = Column(String(50))
-    father_phone_number = Column(String(50))
-    gender = Column(Enum(GenderEnum), nullable=False)
-    date_of_birth = Column(Date, nullable=False)
-    address = Column(String(100))
-    house_no = Column(String(50))
-    street = Column(String(50))
-    colony = Column(String(50))
-    landmark = Column(String(50))
-    city = Column(String(50))
-    state = Column(String(50))
-    pincode = Column(String(20))
-    country = Column(String(20), default="India")
-    govt_id_type = Column(Enum(GovtIDEnum), nullable=False)
-    govt_id_file = Column(LargeBinary, nullable=True)
-    govt_id_number = Column(String(50), nullable=False)
-    necessity = Column(Enum(NecessityEnum), nullable=False)
-    emergency_contact = Column(String(15))
-    food_preference = Column(Enum(FoodEnum), nullable=False)
-    room_type = Column(Enum(RoomEnum), nullable=False)
-
-class TenantStudent(Base):
-    __tablename__ = "tenant_student"
-    __table_args__ = {"schema": "tenant"}
-    tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id"), primary_key=True)
-    studying_at = Column(String(200), nullable=False)
-    student_id_number = Column(String(50), nullable=False)
-    id_card_photo = Column(LargeBinary)
-    college_address = Column(String(50))
-    city = Column(String(100))
-    pincode = Column(String(10))
-    phone_number = Column(String(15))
-  
-class TenantEmployee(Base):
-    __tablename__ = "tenant_employee"
-    __table_args__ = {"schema": "tenant"}
-    tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
-    company_name = Column(String(200), nullable=False)
-    employee_id_number = Column(String(50), nullable=False)
-    id_card_image = Column(LargeBinary)
-    address = Column(String(50))
-    city = Column(String(100))
-    pincode = Column(String(10))
-    phone_number = Column(String(15))
-
-   
-
-class TenantSelfEmployed(Base):
-    __tablename__ = "tenant_self_employed"
-    __table_args__ = {"schema": "tenant"}
-    tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
-    occupation = Column(String(200), nullable=False)
-    alternate_number = Column(String(15))
+class TenantCreate(BaseModel):
+    tenant_id : str = Form(...,)
+    first_name: str = Form(..., min_length=1, max_length=200),
+    last_name: str = Form(..., min_length=1, max_length=200),
+    phone_number: str = Form(..., max_length=15),
+    father_name: str = Form(..., min_length=1, max_length=200),
+    father_phone_number: str = Form(..., max_length=10),
+    gender: GenderEnum = Form(...),
+    date_of_birth: datetime.date = Form(...),
+    address: str = Form(..., min_length=5, max_length=1000),
+    house_no: str = Form(..., min_length=1, max_length=50),
+    street: str = Form(..., min_length=1, max_length=200),
+    colony: str = Form(..., min_length=1, max_length=200),
+    landmark: str = Form(..., min_length=0, max_length=200),
+    city: str = Form(..., min_length=1, max_length=100),
+    state: str = Form(..., min_length=1, max_length=100),
+    pincode: str = Form(..., min_length=4, max_length=12),
+    country: str = Form("India", min_length=2, max_length=100),
+    govt_id_type: GovtIDEnum = Form(...),
+    govt_id_number: str = Form(..., min_length=4, max_length=100),
     
+    emergency_contact: str = Form(..., min_length=7, max_length=15),
+    food_preference: FoodEnum = Form(...),
+    room_type: RoomEnum = Form(...),
 
-class TenantOther(Base):
-    __tablename__ = "tenant_other"
-    __table_args__ = {"schema": "tenant"}
-    tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
-    description = Column(String(500))
-    phone_number = Column(String(15))
+    govt_id_file: UploadFile = Depends(validate_file_security),
+    
+    necessity: NecessityEnum = Form(...),
+
+class TenantStudentCreate(BaseModel):
+    hostel_id: str
+    tenant_id: str
+    studying_at: str
+    student_id_number: str
+    college_address: str
+    city: str
+    pincode: str
+    phone_number: str
+    id_card_photo: UploadFile = Depends(validate_file_security),
+    class Config:
+        anystr_strip_whitespace = True
+        extra = "forbid"
+        orm_mode = True
+
+
+class TenantEmployeeCreate(BaseModel):
+    tenant_id: str
+    company_name: str
+    employee_id_number: str
+    address: str
+    city: str
+    pincode: str
+    phone_number: str
+    id_card_image: UploadFile = Depends(validate_file_security),
+    class Config:
+        anystr_strip_whitespace = True
+        extra = "forbid"
+        orm_mode = True
+
+class TenantSelfEmployedCreate(BaseModel):
+    tenant_id: str
+    occupation: str
+    phone_number: int = Path(lt=10)
+    govt_id_proof: UploadFile = Depends(validate_file_security)
+    class Config:
+        anystr_strip_whitespace = True
+        extra = "forbid"
+        orm_mode = True
+
+class TenantOtherCreate(BaseModel):
+    tenant_id: str
+    description: str
+    phone_number: int = Path(lt=10)
+    govt_id_proof: UploadFile = Depends(validate_file_security)
+    class Config:
+        anystr_strip_whitespace = True
+        extra = "forbid"
+        orm_mode = True

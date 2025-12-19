@@ -1,60 +1,47 @@
-from sqlalchemy import Column, Integer, String, Boolean, Enum, DECIMAL, ForeignKey, LargeBinary, Date
-from database_pkg.database import Base
-import enum
-import uuid
-
-class GenderEnum(str, enum.Enum):
-    Male = "Male"
-    Female = "Female"
-
-class Hostel(Base):
-    __tablename__ = "hostels"
-    __table_args__ = {"schema": "hostel_form"}
-    id = Column(String(225), primary_key=True)
-    hostel_name = Column(String(225), nullable=False)
-    area = Column(String(225), nullable=False)
-    city = Column(String(225), nullable=False)
-    state = Column(String(225), nullable=False)
-    gender = Column(Enum(GenderEnum), nullable=False)
-    phone_number = Column(String(20), nullable=False)
-
-    veg = Column(Boolean, default=False)
-    non_veg = Column(Boolean, default=False)
-
-    ac = Column(Boolean, default=False)
-    non_ac = Column(Boolean, default=False)
-
-    no_of_ac_beds = Column(Integer, default=0)
-    no_of_non_ac_beds = Column(Integer, default=0)
-
-    non_ac_sharing = Column(Boolean, default=False)
-    non_ac_sharing_price = Column(DECIMAL(10,2), default=0.00)
-
-    ac_sharing = Column(Boolean, default=False)
-    ac_sharing_price = Column(DECIMAL(10,2), default=0.00)
-    username = Column(String(100), unique=True)
-    password = Column(String(500))
-
-    terms_and_conditions = Column(String(500))
-    rules_and_regulations = Column(String(500))
-
-class Menu(Base):
-    __tablename__ = 'menu'
-    __table_args__ = {"schema": "hostel_form"}
-    id = Column(String(225), ForeignKey('hostel_form.hostels.id'), primary_key=True)
-    monday = Column(String(50))
-    tuesday = Column(String(50))
-    wednesday = Column(String(50))
-    thursday = Column(String(50))
-    friday = Column(String(50))
-    saturday = Column(String(50))
-    sunday = Column(String(50))
+from pydantic import BaseModel, Field
+from typing import Optional
+from models.hostel_registration_models import GenderEnum
 
 
-class WifiScreens(Base):
-    __tablename__ = 'wifiscreens'
-    __table_args__ = {"schema": "hostel_form"}
-    id = Column(String(225), ForeignKey('hostel_form.hostels.id'), primary_key=True)
+class HostelRequest(BaseModel):
+    hostel_name: str = Field(...)
+    area: str = Field(...)
+    city: str = Field(...)
+    state: str = Field(...)
+    gender: GenderEnum = Field(...)
+    phone_number: str = Field(..., min_length=7, max_length=15)
 
-    screens = Column(String(50))
-    password = Column(String(50))
+    veg: bool = Field(..., default=False)
+    non_veg: bool = Field(..., default=False)
+    ac: bool = Field(..., default=False)
+    non_ac: bool = Field(..., default=False)
+
+    no_of_ac_beds: int = Field(..., default=0)
+    no_of_non_ac_beds: int = Field(..., default=0)
+
+    non_ac_sharing: bool = Field(..., default=False)
+    non_ac_sharing_price: float = Field(..., default=8000.00)
+    ac_sharing: bool = Field(..., default=False)
+    ac_sharing_price: float = Field(..., default=5000.00)
+
+    monday: str = Field(...,)
+    tuesday: str = Field(...)
+    wednesday: str = Field(...)
+    thursday: str = Field(...)
+    friday: str = Field(...)
+    saturday: str = Field(...)
+    sunday: str = Field(...)
+
+    username: str = Field(..., min_length=3, max_length=50)
+    password: str = Field(..., min_length=6)
+
+    wifi_screens: str = Field(...)
+    wifi_password: str = Field(...)
+
+    terms_and_conditions: str = Field(...)
+    rules_and_regulations: str = Field(...)
+
+    class Config:
+        anystr_strip_whitespace = True
+        extra = "forbid"
+        orm_mode = True

@@ -1,17 +1,36 @@
-from sqlalchemy import Column, String, Boolean
-from database_pkg.database import Base3
+from pydantic import BaseModel, EmailStr, Field
+from typing import Optional
 
-import uuid
+class UserCreate(BaseModel):
+	username: str = Field(..., min_length=3, max_length=50)
+	email: EmailStr
+	first_name: Optional[str] = Field(None, max_length=200)
+	last_name: Optional[str] = Field(None, max_length=200)
+	password: str = Field(..., min_length=6)
+	ph_no: Optional[str] = Field(None, max_length=50)
 
-class Users(Base3):
-    __tablename__ = 'authentication'
-    id = Column(String(200), default=lambda: str(uuid.uuid4()), primary_key=True, nullable=False)
-    first_name = Column(String(200))
-    last_name = Column(String(200))
-    email = Column(String(100))
-    username = Column(String(100), nullable=False, unique=True)
-    ph_no = Column(String(50))
-    password = Column(String(300), nullable=False)
-    token = Column(String(300))
-    is_active = Column(Boolean, default=True)
+	class Config:
+		anystr_strip_whitespace = True
+		extra = "forbid"
+		orm_mode = True
+
+class Token(BaseModel):
+	access_token: str = Field(..., )
+	token_type: str = Field(...,)
+	username: str = Field(...,)
+	user_id: str = Field(...,)
+	class Config:
+		anystr_strip_whitespace = True
+		extra = "forbid"
+		orm_mode = True
+
+class UserVerification(BaseModel):
+	password: str = Field(..., min_length=6)
+	new_password: str = Field(..., min_length=6)
+	class Config:
+		anystr_strip_whitespace = True
+		extra = "forbid"
+		orm_mode = True
+
+
 
