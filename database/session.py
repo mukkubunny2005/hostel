@@ -1,6 +1,6 @@
 from typing import Generator
 from sqlalchemy.orm import Session
-from database_pkg.database import SessionLocal, SessionLocal2, SessionLocal3
+from database.database import SessionLocal
 from typing import Annotated
 from fastapi import Depends
 

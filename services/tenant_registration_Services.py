@@ -22,8 +22,11 @@ async def create_tenant(db: Session, tenant_create:TenantCreate, uuid, hostel_id
     db.commit()
     db.refresh(tenant)
     
-    necessity = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == hostel_id).filter(TenantRegistration.tenant_id == tenant_id).filter(TenantRegistration.necessity)
-    match necessity:
+    tenant_necessity = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == hostel_id).filter(TenantRegistration.tenant_id == tenant_id).first()
+    if not tenant_necessity:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED)
+    
+    match tenant_necessity.necessity:
             case NecessityEnum.Student:
                 add_student_details(db, uuid, hostel_id, tenant_id)
             case NecessityEnum.Employee:

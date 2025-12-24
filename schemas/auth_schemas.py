@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Boolean
-from database_pkg.database import Base3
+from database.database import Base3
 
 import uuid
 

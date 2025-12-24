@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, status, HTTPException
 from sqlalchemy.orm import Session
-from database_pkg.session import get_db
+from database.session import get_db
 from typing import Annotated
 from models.hostel_registration_models import *
 from schemas.tenant_Registration_schemas import *
@@ -11,7 +11,6 @@ from sqlalchemy.exc import SQLAlchemyError
 from services import hostel_registration_services as hostel_services
 from schemas.auth_schemas import *
 router = APIRouter()
-
 
 @router.post('/', response_model=HostelRequest,
     status_code=status.HTTP_201_CREATED)

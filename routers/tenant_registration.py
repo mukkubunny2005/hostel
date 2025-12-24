@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
 from sqlalchemy.orm import Session
-from database_pkg.session import get_db
+from database.session import get_db
 from services import tenant_registration_Services as tenant_services
 from models.tenant_registration_models import *
 from typing import Annotated
@@ -36,7 +36,6 @@ async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], uuid
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail="Unable to create user at this time"
         )
-    
 
 
 
