@@ -1,8 +1,8 @@
 from sqlalchemy.orm import Session
 
 from core.security import get_password_hash
-from models.hostel_registration_models import *
-from ..schemas.hostel_registration_schemas import *
+from models.hostel_registration_models import Hostel, Menu, WifiScreens
+from schemas.tenant_Registration_schemas import HostelRequest
 
 
 def create_hostel(db: Session, hostel_request: HostelRequest) -> Hostel:
