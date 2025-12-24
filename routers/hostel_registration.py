@@ -3,8 +3,6 @@ from sqlalchemy.orm import Session
 from database.session import get_db
 from typing import Annotated
 from models.hostel_registration_models import *
-from schemas.tenant_Registration_schemas import *
-from models.hostel_registration_models import *
 import uuid
 from sqlalchemy.exc import SQLAlchemyError
 

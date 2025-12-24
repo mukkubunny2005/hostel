@@ -1,9 +1,9 @@
 from sqlalchemy import Column, String, Boolean
-from database.database import Base3
+from database.database import Base
 
 import uuid
 
-class Users(Base3):
+class Users(Base):
     __tablename__ = 'authentication'
     id = Column(String(200), default=lambda: str(uuid.uuid4()), primary_key=True, nullable=False)
     first_name = Column(String(200))

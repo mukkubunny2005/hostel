@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, Boolean, Enum, DECIMAL, ForeignKey, LargeBinary, Date
-from database_pkg.database import Base
+from database.database import Base
 import enum
 from models.hostel_registration_models import GenderEnum
 

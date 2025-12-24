@@ -1,6 +1,5 @@
-from fastapi import APIRouter, Depends, UploadFile, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from database.session import get_db
 from services import tenant_registration_Services as tenant_services
 from models.tenant_registration_models import *
 from typing import Annotated
