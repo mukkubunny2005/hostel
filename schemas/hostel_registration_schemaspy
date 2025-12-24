@@ -1,7 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Enum, DECIMAL, ForeignKey, LargeBinary, Date
 from database.database import Base
 import enum
-import uuid
 
 class GenderEnum(str, enum.Enum):
     Male = "Male"

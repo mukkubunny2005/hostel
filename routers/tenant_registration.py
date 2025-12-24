@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, UploadFile, File, Form, HTTPException, status
+from fastapi import APIRouter, Depends, UploadFile, HTTPException, status
 from sqlalchemy.orm import Session
 from database.session import get_db
 from services import tenant_registration_Services as tenant_services
@@ -7,18 +7,11 @@ from typing import Annotated
 router = APIRouter()
 import uuid
 from sqlalchemy.exc import SQLAlchemyError
-from services.auth_services import *
-from services.tenant_registration_Services import *
-from schemas.auth_schemas import *
-from services.hostel_registration_services import *
 from core.security import *
 
 
-
-
-
 @router.post('/tenant_registration', response_model=TenantCreate)
-async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], uuid: uuid.uuid4, user:Annotated[Users, Depends(get_current_user)], hostel_id:str):
+async def tenant_registration_form(db: Session, uuid: uuid.uuid4, user:Annotated[Users, Depends(get_current_user)], hostel_id:str):
     try:
         if user is None:
             return HTTPException(
