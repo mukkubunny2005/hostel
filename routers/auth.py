@@ -19,7 +19,7 @@ router = APIRouter()
 db_dependency = Annotated[Session, Depends(get_db)]
 
 
-@router.get("/get_user", response_model=UserOut, status_code=status.HTTP_200_OK)
+@router.get("/get_user", status_code=status.HTTP_200_OK)
 async def get_user( db: db_dependency, current: Annotated[Users, Depends(get_current_user)]):
     if current is None:
         raise HTTPException(status_code=401, detail="Authentication Failed")

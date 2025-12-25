@@ -7,8 +7,10 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, status, security
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
+from core.audit_logger import get_audit_logger
 
-from database_pkg.session import get_db
+
+
 from schemas.auth_schemas import Users
 from pwdlib import PasswordHash
 
@@ -70,3 +72,7 @@ async def get_current_active_user(current_user : dict = Annotated[Users, Depends
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='inactive user')
     return current_user
 
+audit_logger = get_audit_logger()
+
+def log_security_event(message: str):
+    audit_logger.warning(message)

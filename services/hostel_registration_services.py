@@ -4,7 +4,6 @@ from core.security import get_password_hash
 from models.hostel_registration_models import *
 from schemas.hostel_registration_schemas import *
 
-
 def create_hostel(db: Session, hostel_request: HostelRequest) -> Hostel:
     hostel_form = Hostel(
         **hostel_request.model_dump(),
