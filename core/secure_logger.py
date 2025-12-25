@@ -26,6 +26,7 @@ def get_logger(name:str):
     logger.addHandler(handler)
     logger.propagate = False
     return logger
+
 def hostel_logger(hostel:str):
     return get_logger(f"hostel_{hostel}")
 

@@ -27,6 +27,7 @@ async def get_user( db: db_dependency, current: Annotated[Users, Depends(get_cur
         user = auth_services.get_user_by_id(db, current.get("id"))
     except Exception:
         raise HTTPException(status_code=404, detail="User not found")
+    
     return user
 
 

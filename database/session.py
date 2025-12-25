@@ -1,4 +1,3 @@
-from typing import Generator
 from sqlalchemy.orm import Session
 from database.database import SessionLocal
 from typing import Annotated
