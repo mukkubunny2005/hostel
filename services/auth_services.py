@@ -35,9 +35,9 @@ async def create_user(db: Session, email: str, username: str, first_name: Option
     
 
 
-def get_user_by_id(db: Session, user_id: str) -> Users:
+def get_user_by_id(db: Session, user_id: str, hostel_id:str) -> Users:
     try:
-        return db.query(Users).filter(Users.id == user_id).first()
+        return db.query(Users).filter(Users.hostel_id == hostel_id).filter.(Users.user_id == user_id)first()
     except SQLAlchemyError:
         db.rollback()
         raise HTTPException(
