@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from models.tenant_registration_models import *
 from settings.dependencies import *
+from schemas.auth_schemas import Users
 from schemas.tenant_Registration_schemas import (
     TenantRegistration,
     TenantStudent,
@@ -17,10 +18,12 @@ async def create_tenant(db: Session, tenant_create:TenantCreate, uuid, hostel_id
         tenant_id = tenant_id,
         hostel_id = hostel_id
     ),
-    
+    user = Users(**tenant_create.model_dump())
     db.add(tenant)
+    db.add(user)
     db.commit()
     db.refresh(tenant)
+    db.refresh(user)
     
     tenant_necessity = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == hostel_id).filter(TenantRegistration.tenant_id == tenant_id).first()
     if not tenant_necessity:

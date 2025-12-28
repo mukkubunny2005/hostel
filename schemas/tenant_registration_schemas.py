@@ -28,6 +28,7 @@ class TenantRegistration(Base):
     __table_args__ = {"schema": "tenant"}
     hostel_id = Column(String(225), unique=True, primary_key=True)
     tenant_id = Column(String(225), primary_key=True)
+    user_role = Column(String(20))
     first_name = Column(String(20), nullable=False)
     last_name = Column(String(20), nullable=False)
     phone_number = Column(String(15), nullable=False)

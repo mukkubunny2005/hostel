@@ -1,18 +1,18 @@
 from pydantic import BaseModel, EmailStr, Field
 from typing import Optional
 
-class UserCreate(BaseModel):
-	username: str = Field(..., min_length=3, max_length=50)
-	email: EmailStr = Field(...,)
-	first_name: Optional[str] = Field(None, max_length=200)
-	last_name: Optional[str] = Field(None, max_length=200)
-	password: str = Field(..., min_length=6)
-	ph_no: Optional[str] = Field(None, max_length=50)
+# class UserCreate(BaseModel):
+# 	username: str = Field(..., min_length=3, max_length=50)
+# 	email: EmailStr = Field(...,)
+# 	first_name: Optional[str] = Field(None, max_length=200)
+# 	last_name: Optional[str] = Field(None, max_length=200)
+# 	password: str = Field(..., min_length=6)
+# 	ph_no: Optional[str] = Field(None, max_length=50)
 
-	class Config:
-		anystr_strip_whitespace = True
-		extra = "forbid"
-		orm_mode = True
+# 	class Config:
+# 		anystr_strip_whitespace = True
+# 		extra = "forbid"
+# 		orm_mode = True
 
 class Token(BaseModel):
 	access_token: str = Field(..., )

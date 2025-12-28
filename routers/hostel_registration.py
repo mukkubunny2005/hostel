@@ -12,11 +12,12 @@ router = APIRouter()
 
 @router.post('/', response_model=HostelRequest,
     status_code=status.HTTP_201_CREATED)
-def hostel_registration_from(db: Annotated[Session, Depends(get_db)], uuid: uuid.uuid4):
+def hostel_registration_from(db: Annotated[Session, Depends(get_db)], user_id: uuid.uuid4):
     try:
-        hostel_form = hostel_services.create_hostel(db, uuid)
+        hostel_form = hostel_services.create_hostel(db, user_id)
         return {"msg": "hostel created", "hostel_id": uuid}
     except SQLAlchemyError:
+        
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

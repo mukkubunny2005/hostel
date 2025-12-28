@@ -6,9 +6,11 @@ os.makedirs(DIR, exist_ok=True)
 
 def get_audit_logger():
     logger = logging.getLogger("AUDIT")
-    logger.setLevel(logging.WARNING)
+    if logger.handlers:
+        return logger
+    logger.setLevel(logging.INFO)
     handler = TimedRotatingFileHandler(
-        f"{DIR}/audit.log", when="midnight", backupCount=180
+        f"{DIR}/audit.log", when="h", backupCount=180
     )
     handler.setFormatter(logging.Formatter(formatter))
     logger.addHandler(handler)

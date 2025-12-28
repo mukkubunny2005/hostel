@@ -4,6 +4,7 @@ from sqlalchemy.orm import Session
 from datetime import timedelta
 from typing import Annotated
 from database.session import get_db
+from core.secure_logger import get_logger
 from core.security import (
     authenticate_user,
     get_current_user,
@@ -12,6 +13,7 @@ from core.security import (
 from models.auth_models import UserCreate, Token, UserVerification, UserOut
 from schemas.auth_schemas import Users
 from services import auth_services as auth_services
+
 
 
 router = APIRouter()
@@ -25,35 +27,37 @@ async def get_user( db: db_dependency, current: Annotated[Users, Depends(get_cur
         raise HTTPException(status_code=401, detail="Authentication Failed")
     try:
         user = auth_services.get_user_by_id(db, current.get("id"))
+
     except Exception:
-        raise HTTPException(status_code=404, detail="User not found")
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
     
     return user
 
 
-@router.post("/create_user", status_code=status.HTTP_201_CREATED)
-async def create_user(user: UserCreate, db: Annotated[str, Depends(get_db)]):
-    created = auth_services.create_user(
-        db,
-        email=user.email,
-        username=user.username,
-        first_name=user.first_name,
-        last_name=user.last_name,
-        password=user.password,
-        ph_no=user.ph_no,
-    )
-    if created is None:
-        raise HTTPException(status_code=400, detail="Username already exists")
-    return {"msg": "User created successfully", "user_id": created.id}
-
+# @router.post("/create_user", status_code=status.HTTP_201_CREATED)
+# async def create_user(user: UserCreate, db: Annotated[str, Depends(get_db)]):
+#     created = auth_services.create_user(
+#         db,
+#         email=user.email,
+#         username=user.username,
+#         first_name=user.first_name,
+#         last_name=user.last_name,
+#         password=user.password,
+#         ph_no=user.ph_no,
+#     )
+#     if created is None:
+#         raise HTTPException(status_code=400, detail="Username already exists")
+#     return {"msg": "User created successfully", "user_id": created}
+logger = get_logger("auth")
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends(), ) -> Token:
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
+        logger.warning('invalid credientials')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password", headers={"www-Authenticate": "Baarer"})
     token = auth_services.create_token(db, user, timedelta(minutes=20))
-    
+    logger.info('token created : {token}')
     return {
         "access_token": token,
         "token_type": "bearer",
@@ -70,10 +74,14 @@ async def change_password(
 ):
 
     if current is None:
+        logger.error('could not find user')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication Failed")
     ok = auth_services.change_password(db, current.get("id"), user_verification.password, user_verification.new_password)
+    
     if not ok:
+        logger.error('password is not changed this time')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect current password or user not found")
+    logger.info('password changed successfully')
     return {"msg": "password changed successfully"}
 
 
@@ -91,9 +99,12 @@ async def logout(
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
     if not user.token or user.token != token:
+        logger.error('invalid token')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token or already logged out')
 
     logout = auth_services.logout_user(db, user.id)
     if not logout:
+        logger.error('failed to logout user')
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to logout user")
+    logger.info('user logged out successfully')
     return {'msg': 'user logged out successfully'}

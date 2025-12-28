@@ -3,15 +3,22 @@ from sqlalchemy.orm import Session
 from core.security import get_password_hash
 from models.hostel_registration_models import *
 from schemas.hostel_registration_schemas import *
-
-def create_hostel(db: Session, hostel_request: HostelRequest) -> Hostel:
+from schemas.auth_schemas import Users
+def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str) -> Hostel:
     hostel_form = Hostel(
         **hostel_request.model_dump(),
+        hostel_id = hostel_id,
+        
         password=get_password_hash(hostel_request.password),
     )
+    
+    user = Users(**hostel_request.model_dump)
+
     db.add(hostel_form)
+    db.add(user)
     db.commit()
     db.refresh(hostel_form)
+    db.refresh(user)
 
     menu = Menu(
         **hostel_request.model_dump(),

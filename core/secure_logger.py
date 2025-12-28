@@ -12,8 +12,7 @@ class EncryptionHandler(logging.Handler):
         encrypted = cipher.encrypt(msg.encode())
         with open(self.path, "ab") as f:
             f.write(encrypted + b"\n")
-
-formatter = logging.Formatter('%(asctime)s-%(name)s-%(levelname)s:%(message)s', datefmt='%d/%M/%Y%I:%M:%S %P')
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s: %(message)s', datefmt='%d/%m/%Y %I:%M:%S %p')
 
 def get_logger(name:str):
     logger = logging.getLogger(name)
@@ -26,7 +25,4 @@ def get_logger(name:str):
     logger.addHandler(handler)
     logger.propagate = False
     return logger
-
-def hostel_logger(hostel:str):
-    return get_logger(f"hostel_{hostel}")
 

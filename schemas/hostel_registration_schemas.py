@@ -16,7 +16,6 @@ class Hostel(Base):
     state = Column(String(225), nullable=False)
     gender = Column(Enum(GenderEnum), nullable=False)
     phone_number = Column(String(20), nullable=False)
-
     veg = Column(Boolean, default=False)
     non_veg = Column(Boolean, default=False)
 

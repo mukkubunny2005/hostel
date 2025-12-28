@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from services import tenant_registration_Services as tenant_services
 from models.tenant_registration_models import *
+from database.session import get_db
 from typing import Annotated
 router = APIRouter()
 import uuid
@@ -10,18 +11,11 @@ from core.security import *
 
 
 @router.post('/tenant_registration', response_model=TenantCreate)
-async def tenant_registration_form(db: Session, uuid: uuid.uuid4, user:Annotated[Users, Depends(get_current_user)], hostel_id:str):
+async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], hostel_id:str, user_id:str):
     try:
-        if user is None:
-            return HTTPException(
-                status_code=status.HTTP_401_UNAUTHORIZED,
-                detail="Could not validate credentials",
-                headers={"WWW-Authenticate": "Bearer"},
-                )
-        tenant_form = tenant_services.create_tenant(db, user.id, uuid, hostel_id)
+        tenant_form = tenant_services.create_tenant(db, user_id, uuid, hostel_id)
         
-        
-        return {"message": "Tenant created", "tenant_id": uuid}
+        return {"message": "Tenant created", "tenant_id": uuid, "hostel_id":hostel_id}
     except SQLAlchemyError:
         db.rollback()
         raise HTTPException(
