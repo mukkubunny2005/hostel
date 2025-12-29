@@ -50,7 +50,6 @@ async def add_student_details(db: Session, tenant_student_create:TenantStudentCr
     )
     db.add(student)
     db.commit()
-   
     return student
 
 

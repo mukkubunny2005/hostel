@@ -5,7 +5,6 @@ from routers import tenant_registration, hostel_registration, auth
 from database.database import Base, engine
 import time
 
-
 app = FastAPI()
 
 app.add_middleware(HTTPSRedirectMiddleware)
@@ -24,7 +23,6 @@ async def add_process_time_header(request: Request, call_next):
 async def startup_event():
 	Base.metadata.create_all(bind=engine)
 	
-
 app.include_router(hostel_registration.router)
 app.include_router(tenant_registration.router)
 app.include_router(auth.router)

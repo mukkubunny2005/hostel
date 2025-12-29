@@ -45,3 +45,4 @@ class HostelRequest(BaseModel):
         anystr_strip_whitespace = True
         extra = "forbid"
         orm_mode = True
+        

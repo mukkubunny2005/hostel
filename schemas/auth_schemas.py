@@ -1,8 +1,6 @@
 from sqlalchemy import Column, String, Boolean
 from database.database import Base
 
-import uuid
-
 class Users(Base):
     __tablename__ = 'authentication'
     user_id = Column(String(200), primary_key=True, nullable=False)

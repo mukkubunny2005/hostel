@@ -12,7 +12,7 @@ def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str) -> 
         password=get_password_hash(hostel_request.password),
     )
     
-    user = Users(**hostel_request.model_dump)
+    user = Users(**hostel_request.model_dump, password = get_password_hash(hostel_request.password))
 
     db.add(hostel_form)
     db.add(user)
@@ -22,7 +22,7 @@ def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str) -> 
 
     menu = Menu(
         **hostel_request.model_dump(),
-        hostel_id = hostel_form.id
+        hostel_id = hostel_form.hostel_id
 
     )
     db.add(menu)
@@ -31,7 +31,7 @@ def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str) -> 
 
     wifi = WifiScreens(
         **hostel_request.model_dump(),
-        hostel_id = hostel_form.id
+        hostel_id = hostel_form.hostel_id
     )
     db.add(wifi)
     db.commit()
