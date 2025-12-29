@@ -9,13 +9,12 @@ import uuid
 from sqlalchemy.exc import SQLAlchemyError
 from core.security import *
 
-
 @router.post('/tenant_registration', response_model=TenantCreate)
-async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], hostel_id:str, user_id:str):
+async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], hostel_id:str , tenant_id:str = uuid.uuid5):
     try:
-        tenant_form = tenant_services.create_tenant(db, user_id, uuid, hostel_id)
+        tenant_form = tenant_services.create_tenant(db, tenant_id, hostel_id)
         
-        return {"message": "Tenant created", "tenant_id": uuid, "hostel_id":hostel_id}
+        return {"message": "Tenant created", "tenant_id": tenant_id, "hostel_id":hostel_id}
     except SQLAlchemyError:
         db.rollback()
         raise HTTPException(

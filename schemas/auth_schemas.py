@@ -3,7 +3,7 @@ from database.database import Base
 
 class Users(Base):
     __tablename__ = 'authentication'
-    user_id = Column(String(200), primary_key=True, nullable=False)
+    user_id = Column(String(200), primary_key=True)
     hostel_id = Column(String(200), unique=True)
     user_role = Column(String(20))
     hostel_name = Column(String(100))

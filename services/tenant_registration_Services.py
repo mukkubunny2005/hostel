@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from models.tenant_registration_models import *
 from settings.dependencies import *
 from schemas.auth_schemas import Users
+from core.security import get_password_hash
 from schemas.tenant_Registration_schemas import (
     TenantRegistration,
     TenantStudent,
@@ -10,15 +11,16 @@ from schemas.tenant_Registration_schemas import (
     TenantOther,
 )
 
-async def create_tenant(db: Session, tenant_create:TenantCreate, uuid, hostel_id:str, tenant_id:str) -> TenantRegistration:
+async def create_tenant(db: Session, tenant_create:TenantCreate, hostel_id:str, tenant_id:str) -> TenantRegistration:
     
     tenant = TenantRegistration(
         **tenant_create.model_dump(),
         govt_id_file=await tenant_create.govt_id_file.read(),
         tenant_id = tenant_id,
-        hostel_id = hostel_id
+        hostel_id = hostel_id,
+        password = get_password_hash(tenant_create.password),
     ),
-    user = Users(**tenant_create.model_dump())
+    user = Users(**tenant_create.model_dump(), hostel_id = hostel_id, tenant_id = tenant_id, user_role = 'tenant', password = tenant_create.password)
     db.add(tenant)
     db.add(user)
     db.commit()
@@ -84,6 +86,5 @@ def add_other(db: Session, tenant_other_create:TenantOtherCreate) -> TenantOther
     )
     db.add(other)
     db.commit()
-   
     return other
 

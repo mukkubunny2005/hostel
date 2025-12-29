@@ -5,19 +5,17 @@ from typing import Annotated
 from models.hostel_registration_models import *
 import uuid
 from sqlalchemy.exc import SQLAlchemyError
-
 from services import hostel_registration_services as hostel_services
-from schemas.auth_schemas import *
+
 router = APIRouter()
 
 @router.post('/', response_model=HostelRequest,
     status_code=status.HTTP_201_CREATED)
-def hostel_registration_from(db: Annotated[Session, Depends(get_db)], user_id: uuid.uuid4):
+def hostel_registration_from(db: Annotated[Session, Depends(get_db)], hostel_id: uuid.uuid4):
     try:
-        hostel_form = hostel_services.create_hostel(db, user_id)
-        return {"msg": "hostel created", "hostel_id": uuid}
+        hostel_form = hostel_services.create_hostel(db, hostel_id)
+        return {"msg": "hostel created", "hostel_id": hostel_id}
     except SQLAlchemyError:
-        
         db.rollback()
         raise HTTPException(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,

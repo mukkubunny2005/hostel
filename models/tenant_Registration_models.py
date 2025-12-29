@@ -10,7 +10,11 @@ class TenantCreate(BaseModel):
     tenant_id : str = Form(...,)
     first_name: str = Form(..., min_length=1, max_length=200),
     last_name: str = Form(..., min_length=1, max_length=200),
-    phone_number: str = Form(..., max_length=15),
+
+    user_name: str = Form(...,min_length=5, max_length=200),
+    password: str = Form(..., min_length=6)
+    
+    phone_number: int = Form(..., min_length=10),
     father_name: str = Form(..., min_length=1, max_length=200),
     father_phone_number: str = Form(..., max_length=10),
     gender: GenderEnum = Form(...),

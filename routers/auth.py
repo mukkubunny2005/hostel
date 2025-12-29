@@ -5,12 +5,13 @@ from datetime import timedelta
 from typing import Annotated
 from database.session import get_db
 from core.secure_logger import get_logger
+from middleware.attack_detector import detect_attack
 from core.security import (
     authenticate_user,
     get_current_user,
     oauth2_bearer,
 )
-from models.auth_models import UserCreate, Token, UserVerification, UserOut
+from models.auth_models import Token, UserVerification
 from schemas.auth_schemas import Users
 from services import auth_services as auth_services
 
@@ -52,6 +53,7 @@ logger = get_logger("auth")
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(db: db_dependency, form_data: OAuth2PasswordRequestForm = Depends(), ) -> Token:
+    detect_attack()
     user = authenticate_user(db, form_data.username, form_data.password)
     if not user:
         logger.warning('invalid credientials')

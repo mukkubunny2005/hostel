@@ -8,11 +8,12 @@ def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str) -> 
     hostel_form = Hostel(
         **hostel_request.model_dump(),
         hostel_id = hostel_id,
-        
         password=get_password_hash(hostel_request.password),
     )
     
-    user = Users(**hostel_request.model_dump, password = get_password_hash(hostel_request.password))
+    user = Users(**hostel_request.model_dump, password = get_password_hash(hostel_request.password),
+                 user_role = 'owner', hostel_id = hostel_id,
+                 )
 
     db.add(hostel_form)
     db.add(user)
