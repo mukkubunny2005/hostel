@@ -2,6 +2,7 @@ from sqlalchemy.orm import Session
 from models.tenant_registration_models import *
 from settings.dependencies import *
 from schemas.auth_schemas import Users
+
 from core.security import get_password_hash
 from schemas.tenant_Registration_schemas import (
     TenantRegistration,
@@ -33,13 +34,13 @@ async def create_tenant(db: Session, tenant_create:TenantCreate, hostel_id:str, 
     
     match tenant_necessity.necessity:
             case NecessityEnum.Student:
-                add_student_details(db, uuid, hostel_id, tenant_id)
+                add_student_details(db, hostel_id, tenant_id)
             case NecessityEnum.Employee:
-                add_employee_details(db,uuid, hostel_id, tenant_id)
+                add_employee_details(db, hostel_id, tenant_id)
             case NecessityEnum.SelfEmployment:
-                add_self_employed(db, uuid , hostel_id, tenant_id)
+                add_self_employed(db, hostel_id, tenant_id)
             case NecessityEnum.Other:
-                add_other(db,uuid, hostel_id, tenant_id)
+                add_other(db, hostel_id, tenant_id)
     return tenant
 
 

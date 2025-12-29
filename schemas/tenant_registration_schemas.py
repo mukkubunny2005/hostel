@@ -3,7 +3,6 @@ from database.database import Base
 import enum
 from models.hostel_registration_models import GenderEnum
 
-import uuid
 class GovtIDEnum(str, enum.Enum):
     Aadhar = "Aadhar"
     PAN = "PAN"
