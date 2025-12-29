@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, Boolean, Enum, DECIMAL, ForeignKey, LargeBinary, Date
+from sqlalchemy import Column, String, Enum, ForeignKey, LargeBinary, Date, Integer
 from database.database import Base
 import enum
 from models.hostel_registration_models import GenderEnum
@@ -33,7 +33,7 @@ class TenantRegistration(Base):
     last_name = Column(String(20), nullable=False)
     phone_number = Column(String(15), nullable=False)
     father_name = Column(String(50))
-    father_phone_number = Column(String(50))
+    father_phone_number = Column(int(50))
     gender = Column(Enum(GenderEnum), nullable=False)
     date_of_birth = Column(Date, nullable=False)
     address = Column(String(100))
@@ -63,7 +63,6 @@ class TenantStudent(Base):
     college_address = Column(String(50))
     city = Column(String(100))
     pincode = Column(String(10))
-    phone_number = Column(String(15))
   
 class TenantEmployee(Base):
     __tablename__ = "tenant_employee"
@@ -75,7 +74,6 @@ class TenantEmployee(Base):
     address = Column(String(50))
     city = Column(String(100))
     pincode = Column(String(10))
-    phone_number = Column(String(15))
 
    
 
@@ -84,7 +82,6 @@ class TenantSelfEmployed(Base):
     __table_args__ = {"schema": "tenant"}
     tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
     occupation = Column(String(200), nullable=False)
-    alternate_number = Column(String(15))
     
 
 class TenantOther(Base):
@@ -92,4 +89,3 @@ class TenantOther(Base):
     __table_args__ = {"schema": "tenant"}
     tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
     description = Column(String(500))
-    phone_number = Column(String(15))
