@@ -22,7 +22,7 @@ user_dependency = Annotated[dict, Depends(get_current_user)]
 
 router.get('/get_tenant/{hostel_id}/{tenant_id}', status_code=status.HTTP_204_NO_CONTENT)
 async def get_hostel_tenants(db: db_dependency, current_user:user_dependency):
-
+    detect_attack()
     if current_user is None or current_user.get('user_role') != 'admin':
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='user not found')
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
