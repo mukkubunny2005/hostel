@@ -11,8 +11,10 @@ from core.security import (
     authenticate_user,
     get_current_user,
     oauth2_bearer,
-    bcrypt_context
+    bcrypt_context,
+    get_password_hash
 )
+
 from models.auth_models import Token, UserVerification
 from schemas.auth_schemas import Users
 from services import auth_services as auth_services
@@ -84,7 +86,7 @@ async def change_password(
     if bcrypt_context.verify(user_verification.old_password ,user.password) is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error on password change")
     
-    ok = auth_services.change_password(db=db, new_password=user_verification.new_password)
+    ok = user.password = get_password_hash(user_verification.new_password)
     if not ok:
         logger.error('password is not changed at this time')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect current password or user not found")
@@ -115,4 +117,5 @@ async def logout(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to logout user")
     logger.info('user logged out successfully')
     return {'msg': 'user logged out successfully'}
+
 
