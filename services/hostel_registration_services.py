@@ -4,15 +4,16 @@ from core.security import get_password_hash
 from models.hostel_registration_models import *
 from schemas.hostel_registration_schemas import *
 from schemas.auth_schemas import Users
-def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str) -> Hostel:
+def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str, owner_id:str) -> Hostel:
     hostel_form = Hostel(
         **hostel_request.model_dump(),
         hostel_id = hostel_id,
         password=get_password_hash(hostel_request.password),
+        owner_id = owner_id
     )
     
     user = Users(**hostel_request.model_dump, password = get_password_hash(hostel_request.password),
-                 user_role = 'owner', hostel_id = hostel_id,
+                 user_role = 'owner', hostel_id = hostel_id, user_id = owner_id
                  )
 
     db.add(hostel_form)
@@ -37,5 +38,4 @@ def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str) -> 
     db.add(wifi)
     db.commit()
     db.refresh(wifi)
-
     return hostel_form

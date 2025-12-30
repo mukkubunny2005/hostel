@@ -5,6 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException, status
 from core.security import get_password_hash, create_access_token, authenticate_user
 from schemas.auth_schemas import Users
+from core.security import bcrypt_context
 
 # async def create_user(db: Session, email: str, username: str, first_name: Optional[str], last_name: Optional[str], password: str, ph_no: Optional[str]) -> Users:
 #     existing_user = db.query(Users).filter(Users.username == username).first()
@@ -33,9 +34,10 @@ from schemas.auth_schemas import Users
     
 
 
-def get_user_by_id(db: Session, hostel_id:str) -> Users:
+def get_user_by_id(db: Session, user_id:str) -> Users:
     try:
-        return db.query(Users).filter(Users.hostel_id == hostel_id).filter().first()
+        
+        return db.query(Users).filter(Users.user_id == user_id).first()
     except SQLAlchemyError:
         db.rollback()
         raise HTTPException(
@@ -43,24 +45,18 @@ def get_user_by_id(db: Session, hostel_id:str) -> Users:
             detail="Unable to get user at this time"
         )
 
-
-
 def create_token(db: Session, user: Users, expires_delta: Optional[timedelta] = None) -> str:
-    token = create_access_token(user.username, user.id, expires_delta)
+    token = create_access_token(user.username, user.user_id, expires_delta)
     user.token = token
     db.add(user)
     db.commit()
     return token
 
 
-def change_password(db: Session, user_id: str, current_password: str, new_password: str) -> bool:
-    user = get_user_by_id(db, user_id)
-    if not user:
-        return False
-    auth = authenticate_user(db, user.username, current_password)
-    if not auth:
-        return False
-    user.password = get_password_hash(new_password)
+def change_password(db: Session, new_password: str) -> bool:
+    user = Users(
+        password = get_password_hash(new_password)
+    )
     db.add(user)
     db.commit()
     return True

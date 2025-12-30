@@ -11,10 +11,10 @@ router = APIRouter()
 
 @router.post('/', response_model=HostelRequest,
     status_code=status.HTTP_201_CREATED)
-def hostel_registration_from(db: Annotated[Session, Depends(get_db)], hostel_id: uuid.uuid4):
+def hostel_registration_from(db: Annotated[Session, Depends(get_db)], hostel_id: uuid.uuid5, owner_id: uuid.uuid5):
     try:
-        hostel_form = hostel_services.create_hostel(db, hostel_id)
-        return {"msg": "hostel created", "hostel_id": hostel_id}
+        hostel_form = hostel_services.create_hostel(db=db, hostel_id=hostel_id, owner_id=owner_id)
+        return {"msg": "hostel created", "hostel_id": hostel_id, "owner_id" : owner_id}
     except SQLAlchemyError:
         db.rollback()
         raise HTTPException(

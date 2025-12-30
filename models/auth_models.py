@@ -25,7 +25,7 @@ class Token(BaseModel):
 		orm_mode = True
 
 class UserVerification(BaseModel):
-	password: str = Field(..., min_length=6)
+	old_password: str = Field(..., min_length=6)
 	new_password: str = Field(..., min_length=6)
 	class Config:
 		anystr_strip_whitespace = True

@@ -12,8 +12,7 @@ from core.security import *
 @router.post('/tenant_registration', response_model=TenantCreate)
 async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], hostel_id:str , tenant_id:str = uuid.uuid5):
     try:
-        tenant_form = tenant_services.create_tenant(db, tenant_id, hostel_id)
-        
+        tenant_form = tenant_services.create_tenant(db=db, tenant_id=tenant_id, hostel_id=hostel_id)
         return {"message": "Tenant created", "tenant_id": tenant_id, "hostel_id":hostel_id}
     except SQLAlchemyError:
         db.rollback()

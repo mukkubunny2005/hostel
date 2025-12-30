@@ -6,10 +6,12 @@ from typing import Annotated
 from database.session import get_db
 from core.secure_logger import get_logger
 from middleware.attack_detector import detect_attack
+
 from core.security import (
     authenticate_user,
     get_current_user,
     oauth2_bearer,
+    bcrypt_context
 )
 from models.auth_models import Token, UserVerification
 from schemas.auth_schemas import Users
@@ -64,7 +66,7 @@ async def login_for_access_token(db: db_dependency, form_data: OAuth2PasswordReq
         "access_token": token,
         "token_type": "bearer",
         "username": user.username,
-        "user_id": user.id,
+        "user_id": user.user_id,
     }
 
 
@@ -72,16 +74,19 @@ async def login_for_access_token(db: db_dependency, form_data: OAuth2PasswordReq
 async def change_password(
     db: db_dependency, 
     user_verification: UserVerification,
-    current: dict = Depends(get_current_user),
+    current_user: Annotated[dict, Depends(get_current_user)],
 ):
 
-    if current is None:
+    if current_user is None:
         logger.error('could not find user')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication Failed")
-    ok = auth_services.change_password(db, current.get("id"), user_verification.password, user_verification.new_password)
+    user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
+    if bcrypt_context.verify(user_verification.old_password ,user.password) is None:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error on password change")
     
+    ok = auth_services.change_password(db=db, new_password=user_verification.new_password)
     if not ok:
-        logger.error('password is not changed this time')
+        logger.error('password is not changed at this time')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect current password or user not found")
     logger.info('password changed successfully')
     return {"msg": "password changed successfully"}
@@ -96,7 +101,7 @@ async def logout(
     if current_user is None:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user.')
 
-    user = auth_services.get_user_by_id(db, current_user.get('id'))
+    user = auth_services.get_user_by_id(db, current_user.get('user_id'))
     if not user:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
 
@@ -104,9 +109,10 @@ async def logout(
         logger.error('invalid token')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Invalid token or already logged out')
 
-    logout = auth_services.logout_user(db, user.id)
+    logout = auth_services.logout_user(db, user.user_id)
     if not logout:
         logger.error('failed to logout user')
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to logout user")
     logger.info('user logged out successfully')
     return {'msg': 'user logged out successfully'}
+

@@ -10,6 +10,7 @@ class Hostel(Base):
     __tablename__ = "hostels"
     __table_args__ = {"schema": "hostel_form"}
     hostel_id = Column(String(225), primary_key=True)
+    owner_id = Column(String(225), unique=True)
     hostel_name = Column(String(225), nullable=False)
     area = Column(String(225), nullable=False)
     city = Column(String(225), nullable=False)
