@@ -87,9 +87,13 @@ async def change_password(
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error on password change")
     
     ok = user.password = get_password_hash(user_verification.new_password)
+    
     if not ok:
         logger.error('password is not changed at this time')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect current password or user not found")
+    db.add(user)
+    db.commit()
+    db.refresh(user)
     logger.info('password changed successfully')
     return {"msg": "password changed successfully"}
 
