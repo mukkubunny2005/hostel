@@ -22,6 +22,3 @@ async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], host
             detail="Unable to create user at this time"
         )
 
-@router.get('/particular_hostel/{hostel_id}')
-def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_dependency):
-    db_dependency
