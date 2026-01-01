@@ -55,4 +55,3 @@ async def delete_tenant(db: db_dependency, current_user:user_dependency, tenant_
 def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_dependency):
     db_dependency
 
-
