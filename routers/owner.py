@@ -68,3 +68,4 @@ def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_depende
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
     return tenant
 
+
