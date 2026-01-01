@@ -54,7 +54,3 @@ async def delete_tenant(db: db_dependency, current_user:user_dependency, tenant_
 @router.get('/particular_hostel/{hostel_id}')
 def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_dependency):
     db_dependency
-
-
-
-
