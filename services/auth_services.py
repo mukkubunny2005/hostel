@@ -53,13 +53,13 @@ def create_token(db: Session, user: Users, expires_delta: Optional[timedelta] = 
     return token
 
 
-def change_password(db: Session, new_password: str) -> bool:
-    user = Users(
-        password = get_password_hash(new_password)
-    )
-    db.add(user)
-    db.commit()
-    return True
+# def change_password(db: Session, new_password: str) -> bool:
+#     user = Users(
+#         password = get_password_hash(new_password)
+#     )
+#     db.add(user)
+#     db.commit()
+#     return True
 
 
 def logout_user(db: Session, user_id: str) -> bool:

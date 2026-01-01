@@ -7,10 +7,11 @@ from database.session import get_db
 from core.secure_logger import get_logger
 from middleware.attack_detector import detect_attack
 from auth import detect_attack, db_dependency
-from models.tenant_registration_models import *
+from models.tenant_Registration_models import *
 from models.hostel_registration_models import *
 from schemas.auth_schemas import *
 from schemas.hostel_registration_schemas import *
+from schemas.tenant_registration_schemas import *
 from core.security import (
     authenticate_user,
     get_current_user,
@@ -41,11 +42,14 @@ async def delete_tenant(db: db_dependency, current_user:user_dependency, tenant_
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
-    tenants = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == user.hostel_id).filter(Hostel.owner_id == current_user.get('user_id')).filter(TenantRegistration.tenant_id == tenant_id).filter()
-    user_tenant = db.query(Users).filter(Users.user_id == tenants.tenant)
-    if tenants is None:
+    tenants = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == user.hostel_id).filter(Hostel.owner_id == current_user.get('user_id')).filter(TenantRegistration.tenant_id == tenant_id).first()
+    user_tenant = db.query(Users).filter(Users.user_id == tenants.tenant_id)
+    if user_tenant is None:
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
-    db.delete(tenants)
+    db.delete(user_tenant)
     db.commit()
-    db.refresh(tenants)
+    db.refresh(user_tenant)
     return {'delete tenant successfully with tenant_id': tenant_id}
+
+
+
