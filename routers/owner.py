@@ -52,7 +52,7 @@ async def delete_tenant(db: db_dependency, current_user:user_dependency, tenant_
     return {'delete tenant successfully with tenant_id': tenant_id}
 
 @router.get('/particular_hostel/{hostel_id}')
-def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_dependency):
+def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_dependency, hostel_name:str):
     if detect_attack():
         raise HTTPException(status_code=status.HTTP_203_NON_AUTHORITATIVE_INFORMATION, detail='attack detected')
     if current_user is None or current_user.get('user_role') != 'admin':
@@ -60,3 +60,10 @@ def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_depende
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
+    hostel = db.query(Hostel).filter(Hostel.owner_id == user.user_id).filter(Hostel.hostel_name == hostel_name).first()
+    if hostel is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
+    tenant = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == hostel_id).first()
+    if tenant is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
+    return tenant
