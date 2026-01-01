@@ -8,7 +8,8 @@ router = APIRouter()
 import uuid
 from sqlalchemy.exc import SQLAlchemyError
 from core.security import *
-
+from auth import db_dependency
+from owner import *
 @router.post('/tenant_registration', response_model=TenantCreate)
 async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], hostel_id:str , tenant_id:str = uuid.uuid5):
     try:
@@ -22,5 +23,5 @@ async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], host
         )
 
 @router.get('/particular_hostel/{hostel_id}')
-def particular_hostel(hostel_id:str):
-    
+def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_dependency):
+    db_dependency
