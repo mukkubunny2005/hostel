@@ -51,6 +51,7 @@ async def delete_tenant(db: db_dependency, current_user:user_dependency, tenant_
     db.refresh(user_tenant)
     return {'delete tenant successfully with tenant_id': tenant_id}
 
+
 @router.get('/particular_hostel/{hostel_id}')
 def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_dependency, hostel_name:str):
     if detect_attack():
