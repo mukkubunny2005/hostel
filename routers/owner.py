@@ -69,3 +69,4 @@ def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_depende
     return tenant
 
 
+
