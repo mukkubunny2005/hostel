@@ -87,3 +87,5 @@ class TenantOther(Base):
     __table_args__ = {"schema": "tenant"}
     tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
     description = Column(String(500))
+
+    

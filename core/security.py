@@ -78,3 +78,4 @@ async def get_current_active_user(current_user : dict = Annotated[Users, Depends
         logger.error('unable to get user')
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='inactive user')
     return current_user
+

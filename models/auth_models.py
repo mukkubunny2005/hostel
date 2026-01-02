@@ -32,5 +32,3 @@ class UserVerification(BaseModel):
 		extra = "forbid"
 		orm_mode = True
 
-
-

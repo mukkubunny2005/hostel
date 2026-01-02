@@ -8,4 +8,3 @@ class TraceMiddleware(BaseHTTPMiddleware):
         response = await call_next(request)
         response.headers["X-Trace-ID"] = request.state.trace_id
         return response
-

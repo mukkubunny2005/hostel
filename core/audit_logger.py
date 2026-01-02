@@ -16,3 +16,4 @@ def get_audit_logger():
     logger.addHandler(handler)
     logger.propagate = False
     return logger
+

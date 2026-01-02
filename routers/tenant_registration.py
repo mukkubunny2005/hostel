@@ -7,9 +7,8 @@ from typing import Annotated
 router = APIRouter()
 import uuid
 from sqlalchemy.exc import SQLAlchemyError
-from core.security import *
-from auth import db_dependency
-from owner import *
+
+
 @router.post('/tenant_registration', response_model=TenantCreate)
 async def tenant_registration_form(db: Annotated[Session, Depends(get_db)], hostel_id:str , tenant_id:str = uuid.uuid5):
     try:

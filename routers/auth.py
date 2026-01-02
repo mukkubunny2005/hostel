@@ -53,6 +53,7 @@ async def get_user( db: db_dependency, current: Annotated[Users, Depends(get_cur
 #     if created is None:
 #         raise HTTPException(status_code=400, detail="Username already exists")
 #     return {"msg": "User created successfully", "user_id": created}
+
 logger = get_logger("auth")
 
 @router.post("/token", response_model=Token)

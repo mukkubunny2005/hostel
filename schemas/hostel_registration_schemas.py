@@ -19,16 +19,12 @@ class Hostel(Base):
     phone_number = Column(String(20), nullable=False)
     veg = Column(Boolean, default=False)
     non_veg = Column(Boolean, default=False)
-
     ac = Column(Boolean, default=False)
     non_ac = Column(Boolean, default=False)
-
     no_of_ac_beds = Column(Integer, default=0)
     no_of_non_ac_beds = Column(Integer, default=0)
-
     non_ac_sharing = Column(Boolean, default=False)
     non_ac_sharing_price = Column(DECIMAL(10,2), default=0.00)
-
     ac_sharing = Column(Boolean, default=False)
     ac_sharing_price = Column(DECIMAL(10,2), default=0.00)
     username = Column(String(100), unique=True)

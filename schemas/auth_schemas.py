@@ -12,5 +12,3 @@ class Users(Base):
     password = Column(String(300), nullable=False)
     token = Column(String(300))
     is_active = Column(Boolean, default=True)
-
-

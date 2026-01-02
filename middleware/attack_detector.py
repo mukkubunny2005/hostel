@@ -12,3 +12,4 @@ async def detect_attack(request:Request):
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="IP temporarily blocked")
     FAILED_ATTEMPTS[ip].append(now)
     
+    

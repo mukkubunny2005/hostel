@@ -24,5 +24,3 @@ def hostel_registration_from(db: Annotated[Session, Depends(get_db)], hostel_id:
 
 
     
-
-
