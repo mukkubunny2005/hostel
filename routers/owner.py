@@ -68,3 +68,12 @@ def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_depende
     if tenant is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
     return tenant
+
+@router.post('/warden')
+def warden_access(db:db_dependency, current_user:user_dependency):
+    if current_user is None or current_user.get('user_role') != 'admin':
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='user not found')
+    user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
+    if user is None:
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
+    
