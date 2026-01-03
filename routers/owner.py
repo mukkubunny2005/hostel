@@ -9,6 +9,7 @@ from middleware.attack_detector import detect_attack
 from auth import detect_attack, db_dependency
 from models.tenant_Registration_models import *
 from models.hostel_registration_models import *
+from models.auth_models import *
 from schemas.auth_schemas import *
 from schemas.hostel_registration_schemas import *
 from schemas.tenant_registration_schemas import *
@@ -70,10 +71,21 @@ def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_depende
     return tenant
 
 @router.post('/warden')
+<<<<<<< HEAD
 def warden_access(db:db_dependency, current_user:user_dependency):
+=======
+def warden_access(db:db_dependency, current_user:user_dependency, warden_access: Warden ):
+>>>>>>> a77e3ff (Restore missing files)
     if current_user is None or current_user.get('user_role') != 'admin':
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='user not found')
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
+<<<<<<< HEAD
+=======
+    warden = Users(
+        hostel_id = user.hostel_id,
+        user_role = 'warden'
+    )
+>>>>>>> a77e3ff (Restore missing files)
     

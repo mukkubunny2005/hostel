@@ -31,3 +31,7 @@ class UserVerification(BaseModel):
 		extra = "forbid"
 		orm_mode = True
 
+class Warden(BaseModel):
+	user_id:str = Field(..., default='warden')
+	user_name:str = Field(...,)
+	password:str = Field(...,)
