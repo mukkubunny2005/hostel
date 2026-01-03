@@ -33,5 +33,5 @@ class UserVerification(BaseModel):
 
 class Warden(BaseModel):
 	user_id:str = Field(..., default='warden')
-	user_name:str = Field(...,)
+	username:str = Field(...,)
 	password:str = Field(...,)

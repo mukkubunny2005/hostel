@@ -7,7 +7,6 @@ class Users(Base):
     hostel_id = Column(String(200), unique=True)
     user_role = Column(String(20))
     hostel_name = Column(String(100))
-    email = Column(String(100))
     username = Column(String(100), nullable=False, unique=True)
     password = Column(String(300), nullable=False)
     token = Column(String(300))

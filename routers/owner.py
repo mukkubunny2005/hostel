@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from typing import Annotated
+
 from database.session import get_db
 from core.secure_logger import get_logger
 from middleware.attack_detector import detect_attack
@@ -17,7 +18,8 @@ from core.security import (
     authenticate_user,
     get_current_user,
     oauth2_bearer,
-    bcrypt_context
+    bcrypt_context,
+    get_password_hash
 )
 router = APIRouter()
 user_dependency = Annotated[dict, Depends(get_current_user)]
@@ -79,7 +81,7 @@ def warden_access(db:db_dependency, current_user:user_dependency, warden_access:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
     warden = Users(
         hostel_id = user.hostel_id,
-        user_role = 'warden'
+        user_role = 'warden',
+        username = warden_access.username,
+        password = get_password_hash
     )
-
-    
