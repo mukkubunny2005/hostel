@@ -85,3 +85,4 @@ def warden_access(db:db_dependency, current_user:user_dependency, warden_access:
         username = warden_access.username,
         password = get_password_hash
     )
+    return warden
