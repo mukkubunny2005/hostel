@@ -2,7 +2,7 @@ from pydantic import BaseModel, Field
 from models.hostel_registration_models import GenderEnum
 
 
-class HostelRequest(BaseModel):
+class HostelRegistrationRequest(BaseModel):
     hostel_name: str = Field(...)
     area: str = Field(...)
     city: str = Field(...)

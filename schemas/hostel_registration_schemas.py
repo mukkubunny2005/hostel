@@ -6,7 +6,7 @@ class GenderEnum(str, enum.Enum):
     Male = "Male"
     Female = "Female"
 
-class Hostel(Base):
+class HostelRegistration(Base):
     __tablename__ = "hostels"
     __table_args__ = {"schema": "hostel_form"}
     hostel_id = Column(String(225), primary_key=True)

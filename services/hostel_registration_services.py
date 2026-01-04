@@ -4,8 +4,8 @@ from models.hostel_registration_models import *
 from schemas.hostel_registration_schemas import *
 from schemas.auth_schemas import Users
 
-def create_hostel(db: Session, hostel_request: HostelRequest, hostel_id:str, owner_id:str) -> Hostel:
-    hostel_form = Hostel(
+def create_hostel(db: Session, hostel_request: HostelRegistrationRequest, hostel_id:str, owner_id:str) -> HostelRegistration:
+    hostel_form = HostelRegistration(
         **hostel_request.model_dump(),
         hostel_id = hostel_id,
         password=get_password_hash(hostel_request.password),

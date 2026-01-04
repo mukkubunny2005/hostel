@@ -32,7 +32,7 @@ async def get_hostel_tenants(db: db_dependency, current_user:user_dependency):
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
-    tenants = db.query(Hostel).filter(Hostel.hostel_id == user.hostel_id).filter(Hostel.owner_id == current_user.get('user_id')).filter()
+    tenants = db.query(HostelRegistration).filter(HostelRegistration.hostel_id == user.hostel_id).filter(HostelRegistration.owner_id == current_user.get('user_id')).filter()
     if tenants is None:
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
     return tenants
@@ -45,7 +45,7 @@ async def delete_tenant(db: db_dependency, current_user:user_dependency, tenant_
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
-    tenants = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == user.hostel_id).filter(Hostel.owner_id == current_user.get('user_id')).filter(TenantRegistration.tenant_id == tenant_id).first()
+    tenants = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == user.hostel_id).filter(HostelRegistration.owner_id == current_user.get('user_id')).filter(TenantRegistration.tenant_id == tenant_id).first()
     user_tenant = db.query(Users).filter(Users.user_id == tenants.tenant_id)
     if user_tenant is None:
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
@@ -64,7 +64,7 @@ def particular_hostel(hostel_id:str, db:db_dependency, current_user:user_depende
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
-    hostel = db.query(Hostel).filter(Hostel.owner_id == user.user_id).filter(Hostel.hostel_name == hostel_name).first()
+    hostel = db.query(HostelRegistration).filter(HostelRegistration.owner_id == user.user_id).filter(HostelRegistration.hostel_name == hostel_name).first()
     if hostel is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
     tenant = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == hostel_id).first()
