@@ -14,7 +14,7 @@ from pydantic import BaseModel, Field
 # 		orm_mode = True
 
 class Token(BaseModel):
-	access_token: str = Field()
+	access_token: str = Field(...)
 	token_type: str = Field(...,)
 	username: str = Field(...,)
 	user_id: str = Field(...,)
@@ -37,3 +37,9 @@ class Warden(BaseModel):
 	user_id:str = Field(default='warden')
 	username:str = Field(...,)
 	password:str = Field(...,)
+	model_config = {
+        "str_strip_whitespace": True,   
+        "extra": "allow",
+        "from_attributes": True         
+    }
+
