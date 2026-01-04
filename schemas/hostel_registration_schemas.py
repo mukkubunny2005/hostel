@@ -1,10 +1,6 @@
 from sqlalchemy import Column, Integer, String, Boolean, Enum, DECIMAL, ForeignKey, LargeBinary, Date
 from database.database import Base
-import enum
-
-class GenderEnum(str, enum.Enum):
-    Male = "Male"
-    Female = "Female"
+from enum.all_enums import GenderEnum
 
 class HostelRegistration(Base):
     __tablename__ = "hostels"

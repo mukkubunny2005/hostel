@@ -1,7 +1,6 @@
 from pydantic import BaseModel
-from fastapi import APIRouter, Depends, UploadFile, File, Form, Path
+from fastapi import Depends, UploadFile, File, Form, Path
 import datetime
-from typing import Optional
 from schemas.tenant_registration_schemas import *
 from settings.dependencies import *
 

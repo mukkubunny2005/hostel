@@ -1,30 +1,10 @@
-from sqlalchemy import Column, String, Enum, ForeignKey, LargeBinary, Date, Integer
+from sqlalchemy import Column, String, Enum, ForeignKey, LargeBinary, Date
 from database.database import Base
-import enum
-from models.hostel_registration_models import GenderEnum
-
-class GovtIDEnum(str, enum.Enum):
-    Aadhar = "Aadhar"
-    PAN = "PAN"
-    VoterID = "VoterID"
-
-class NecessityEnum(str, enum.Enum):
-    Student = "Student"
-    Employee = "Employee"
-    SelfEmployment = "Self Employee"
-    Other = "Other"
-
-class FoodEnum(str, enum.Enum):
-    Veg = "Veg"
-    NonVeg = "Non Veg"
-    Both = "Both"
-class RoomEnum(str, enum.Enum):
-    AC = "AC"
-    NONAC = "Non AC"
+from enum.all_enums import GenderEnum, FoodEnum, GovtIDEnum, NecessityEnum, RoomEnum
 
 class TenantRegistration(Base):
-    __tablename__ = "tenant_registration_form"
-    __table_args__ = {"schema": "tenant"}
+    __tablename__ = "tenant_registration"
+    __table_args__ = {"schema": "public"}
     hostel_id = Column(String(225), unique=True, primary_key=True)
     tenant_id = Column(String(225), primary_key=True)
     first_name = Column(String(20), nullable=False)
@@ -53,7 +33,7 @@ class TenantRegistration(Base):
 
 class TenantStudent(Base):
     __tablename__ = "tenant_student"
-    __table_args__ = {"schema": "tenant"}
+    __table_args__ = {"schema": "public"}
     tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id"), primary_key=True)
     studying_at = Column(String(200), nullable=False)
     student_id_number = Column(String(50), nullable=False)
@@ -64,7 +44,7 @@ class TenantStudent(Base):
   
 class TenantEmployee(Base):
     __tablename__ = "tenant_employee"
-    __table_args__ = {"schema": "tenant"}
+    __table_args__ = {"schema": "public"}
     tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
     company_name = Column(String(200), nullable=False)
     employee_id_number = Column(String(50), nullable=False)
@@ -77,14 +57,14 @@ class TenantEmployee(Base):
 
 class TenantSelfEmployed(Base):
     __tablename__ = "tenant_self_employed"
-    __table_args__ = {"schema": "tenant"}
+    __table_args__ = {"schema": "public"}
     tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
     occupation = Column(String(200), nullable=False)
     
 
 class TenantOther(Base):
     __tablename__ = "tenant_other"
-    __table_args__ = {"schema": "tenant"}
+    __table_args__ = {"schema": "public"}
     tenant_id = Column(String(225), ForeignKey("tenant.tenant_registration_form.tenant_id", ondelete="CASCADE"), primary_key=True)
     description = Column(String(500))
 

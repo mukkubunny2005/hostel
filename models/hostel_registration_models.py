@@ -1,6 +1,5 @@
 from pydantic import BaseModel, Field
-from models.hostel_registration_models import GenderEnum
-
+from enum.all_enums import GenderEnum
 
 class HostelRegistrationRequest(BaseModel):
     hostel_name: str = Field(...)
@@ -44,4 +43,3 @@ class HostelRegistrationRequest(BaseModel):
         anystr_strip_whitespace = True
         extra = "forbid"
         orm_mode = True
-        
