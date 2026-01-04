@@ -26,7 +26,6 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     return bcrypt_context.hash(password)
 
-
 def authenticate_user(db: Session, username: str, password: str) -> Users:
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
@@ -50,7 +49,7 @@ def create_access_token(subject: str, user_id: str, expires_delta: Optional[time
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
-async def get_current_user(token: Annotated[str, security(oauth2_bearer)], request: Request) -> dict:
+async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], request: Request) -> dict:
     await detect_attack(request)
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

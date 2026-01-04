@@ -1,6 +1,6 @@
-from sqlalchemy import Column, String, Enum, ForeignKey, LargeBinary, Date
+from sqlalchemy import Column, String, Enum, ForeignKey, LargeBinary, Date, Integer
 from database.database import Base
-from enum.all_enums import GenderEnum, FoodEnum, GovtIDEnum, NecessityEnum, RoomEnum
+from models.all_enums import GenderEnum, FoodEnum, GovtIDEnum, NecessityEnum, RoomEnum
 
 class TenantRegistration(Base):
     __tablename__ = "tenant_registration"
@@ -9,9 +9,9 @@ class TenantRegistration(Base):
     tenant_id = Column(String(225), primary_key=True)
     first_name = Column(String(20), nullable=False)
     last_name = Column(String(20), nullable=False)
-    phone_number = Column(String(15), nullable=False)
+    phone_number = Column(Integer(), nullable=False)
     father_name = Column(String(50))
-    father_phone_number = Column(int(50))
+    father_phone_number = Column(Integer())
     gender = Column(Enum(GenderEnum), nullable=False)
     date_of_birth = Column(Date, nullable=False)
     address = Column(String(100))
