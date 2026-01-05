@@ -1,5 +1,5 @@
 from pydantic import BaseModel, Field
-from models.all_enums import GenderEnum
+from models.enums import GenderEnum
 
 class HostelRegistrationRequest(BaseModel):
     hostel_name: str = Field(...)

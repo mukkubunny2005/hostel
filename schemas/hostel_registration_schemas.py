@@ -1,10 +1,10 @@
 from sqlalchemy import Column, Integer, String, Boolean, Enum, DECIMAL, ForeignKey, LargeBinary, Date
 from database.database import Base
-from models.all_enums import GenderEnum
+from models.enums import GenderEnum
 
 class HostelRegistration(Base):
-    __tablename__ = "hostels"
-    __table_args__ = {"schema": "hostel_form"}
+    __tablename__ = "hostel_registration"
+    __table_args__ = {"schema": "hostel_management"}
     hostel_id = Column(String(225), primary_key=True)
     owner_id = Column(String(225), unique=True)
     hostel_name = Column(String(225), nullable=False)
@@ -31,8 +31,8 @@ class HostelRegistration(Base):
 
 class Menu(Base):
     __tablename__ = 'menu'
-    __table_args__ = {"schema": "hostel_form"}
-    id = Column(String(225), ForeignKey('hostel_form.hostels.id'), primary_key=True)
+    __table_args__ = {"schema": "hostel_management"}
+    hostel_id = Column(String(225), ForeignKey('hostel_registration.hostels.id'), primary_key=True)
     monday = Column(String(50))
     tuesday = Column(String(50))
     wednesday = Column(String(50))
@@ -44,8 +44,8 @@ class Menu(Base):
 
 class WifiScreens(Base):
     __tablename__ = 'wifiscreens'
-    __table_args__ = {"schema": "hostel_form"}
-    id = Column(String(225), ForeignKey('hostel_form.hostels.id'), primary_key=True)
+    __table_args__ = {"schema": "hostel_management"}
+    hostel_id = Column(String(225), ForeignKey('hostel_registration.hostels.id'), primary_key=True)
 
     screens = Column(String(50))
     password = Column(String(50))
