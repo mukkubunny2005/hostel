@@ -5,7 +5,8 @@ from dotenv import load_dotenv
 load_dotenv()
 
 
-DATABASE_URL = "postgresql+psycopg2://postgresql:123@localhost:5432/hostel_management"
+DATABASE_URL = "postgresql+psycopg2://postgres:123@localhost:5433/hostel_management"
+
 
 engine = create_engine(DATABASE_URL)
 
