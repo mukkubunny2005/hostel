@@ -8,7 +8,7 @@ from database.session import get_db
 from core.secure_logger import get_logger
 from middleware.attack_detector import detect_attack
 from auth import detect_attack, db_dependency
-from models.tenant_Registration_models import *
+from models.tenant_registration_models import *
 from models.hostel_registration_models import *
 from models.auth_models import *
 from schemas.auth_schemas import *

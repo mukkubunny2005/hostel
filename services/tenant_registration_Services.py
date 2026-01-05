@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models.tenant_Registration_models import *
+from models.tenant_registration_models import *
 from settings.dependencies import *
 from schemas.auth_schemas import Users
 from core.security import get_password_hash

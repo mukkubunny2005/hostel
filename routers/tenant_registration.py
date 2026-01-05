@@ -1,7 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from services import tenant_registration_Services as tenant_services
-from models.tenant_Registration_models import *
+from models.tenant_registration_models import *
 from database.session import get_db
 from typing import Annotated
 router = APIRouter()

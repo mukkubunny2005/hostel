@@ -1,10 +1,13 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
+from dotenv import load_dotenv
+load_dotenv()
 
-SQLALCHEMY_DATABASE_URL = "postgresql+psycopg2://root:bunny@postgresql18:5432/hostel_management?options=-csearch_path%3Dpublic"
 
-engine = create_engine(SQLALCHEMY_DATABASE_URL)
+DATABASE_URL = "postgresql+psycopg2://postgresql:123@localhost:5432/hostel_management"
+
+engine = create_engine(DATABASE_URL)
 
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
