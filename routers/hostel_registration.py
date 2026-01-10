@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, status, HTTPException
+from fastapi import APIRouter, Depends, status, HTTPException, Form
 from sqlalchemy.orm import Session
 from database.session import get_db
 from typing import Annotated
@@ -11,10 +11,14 @@ router = APIRouter()
 
 @router.post('/', response_model=HostelRegistrationRequest,
     status_code=status.HTTP_201_CREATED)
-def hostel_registration_from(db: Annotated[Session, Depends(get_db)], hostel_id: uuid.uuid5, owner_id: uuid.uuid5):
+def hostel_registration_from(db: Annotated[Session, Depends(get_db)], hostel_id: uuid.uuid5, owner_id: uuid.uuid5, hostels:bool):
+    if hostels:
+        owner_id_ = owner_id
+    else:
+        owner_id_ = Form(...,)
     try:
-        hostel_form = hostel_services.create_hostel(db=db, hostel_id=hostel_id, owner_id=owner_id)
-        return {"msg": "hostel created", "hostel_id": hostel_id, "owner_id" : owner_id}
+        hostel_form = hostel_services.create_hostel(db=db, hostel_id=hostel_id, owner_id=owner_id_)
+        return {"msg": "hostel created", "hostel_id": hostel_form.hostel_id, "owner_id" : hostel_form.owner_id}
     except SQLAlchemyError:
         db.rollback()
         raise HTTPException(

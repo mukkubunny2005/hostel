@@ -1,10 +1,8 @@
 from fastapi import FastAPI, Request
 from middleware.request_trace import RequestTraceMiddleware
-from routers import tenant_registration, hostel_registration, auth
+from routers import tenant_registration, hostel_registration, auth, owner
 from database.database import Base, engine
 import time
-
-
 from contextlib import asynccontextmanager
 
 @asynccontextmanager
@@ -27,5 +25,4 @@ async def add_process_time_header(request: Request, call_next):
 app.include_router(hostel_registration.router)
 app.include_router(tenant_registration.router)
 app.include_router(auth.router)
-
-
+app.include_router(owner.router)
