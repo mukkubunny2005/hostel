@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.post('/', response_model=HostelRegistrationRequest,
     status_code=status.HTTP_201_CREATED)
-def hostel_registration_from(db: Annotated[Session, Depends(get_db)], hostel_id: uuid.uuid5, owner_id: uuid.uuid5, hostels:bool):
+def hostel_registration_from(db: Annotated[Session, Depends(get_db)], hostel_id: uuid.uuid5, owner_id: str = uuid.uuid5, hostels:str = bool):
     if hostels:
         owner_id_ = owner_id
     else:

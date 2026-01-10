@@ -6,8 +6,8 @@ from settings.dependencies import *
 
 class TenantCreate(BaseModel):
     tenant_id : str = Form(...,)
-    first_name: str = Form(min_length=1, max_length=200),
-    last_name: str = Form(min_length=1, max_length=200),
+    first_name: str = Form(min_length=1, max_length=20),
+    last_name: str = Form(min_length=1, max_length=20),
 
     user_name: str = Form(...,min_length=5, max_length=200),
     password: str = Form(min_length=6)
