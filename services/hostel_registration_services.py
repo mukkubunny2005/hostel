@@ -6,7 +6,7 @@ from schemas.auth_schemas import Users
 from schemas.hostel_registration_schemas import HostelRegistration, Menu, WifiScreens
 
 def create_hostel(db: Session, hostel_request: HostelRegistrationRequest, hostel_id:str, owner_id:str) -> HostelRegistration:
-    payload = hostel_request.model_dump() :
+    payload = hostel_request.model_dump()
     hostel_form = HostelRegistration(
         **payload,
         hostel_id = hostel_id,
