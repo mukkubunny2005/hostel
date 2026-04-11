@@ -5,7 +5,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from fastapi import HTTPException, status
 from core.security import get_password_hash, create_access_token, authenticate_user
 from schemas.auth_schemas import Users
-from core.security import bcrypt_context
+from core.security import create_access_token
 
 # async def create_user(db: Session, email: str, username: str, first_name: Optional[str], last_name: Optional[str], password: str, ph_no: Optional[str]) -> Users:
 #     existing_user = db.query(Users).filter(Users.username == username).first()
