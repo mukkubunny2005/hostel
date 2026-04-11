@@ -1,19 +1,21 @@
 from sqlalchemy.orm import Session
+
 from core.security import get_password_hash
-from models.hostel_registration_models import *
-from schemas.hostel_registration_schemas import *
+from models.hostel_registration_models import HostelRegistrationRequest
 from schemas.auth_schemas import Users
+from schemas.hostel_registration_schemas import HostelRegistration, Menu, WifiScreens
 
 def create_hostel(db: Session, hostel_request: HostelRegistrationRequest, hostel_id:str, owner_id:str) -> HostelRegistration:
+    payload = hostel_request.model_dump() :
     hostel_form = HostelRegistration(
-        **hostel_request.model_dump(),
+        **payload,
         hostel_id = hostel_id,
         password=get_password_hash(hostel_request.password),
         owner_id = owner_id
     )
     
-    user = Users(**hostel_request.model_dump, password = get_password_hash(hostel_request.password),
-                 user_role = 'owner', hostel_id = hostel_id, user_id = owner_id
+    user = Users(username=hostel_request.username, password = get_password_hash(hostel_request.password),
+                 user_role = 'owner', hostel_id = hostel_id, user_id = owner_id, hostel_name=hostel_request.hostel_name
                  )
 
     db.add(hostel_form)
