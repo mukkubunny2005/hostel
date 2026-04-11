@@ -1,14 +1,19 @@
 from sqlalchemy.orm import Session
-from models.tenant_registration_models import *
-from settings.dependencies import *
+from models.tenant_Registration_models import (
+    TenantCreate,
+    TenantEmployeeCreate,
+    TenantOtherCreate,
+    TenantSelfEmployedCreate,
+    TenantStudentCreate,
+)
 from schemas.auth_schemas import Users
 from core.security import get_password_hash
 from schemas.tenant_registration_schemas import (
-    TenantRegistration,
-    TenantStudent,
     TenantEmployee,
-    TenantSelfEmployed,
     TenantOther,
+    TenantRegistration,
+    TenantSelfEmployed,
+    TenantStudent,
 )
 
 async def create_tenant(db: Session, tenant_create:TenantCreate, hostel_id:str, tenant_id:str) -> TenantRegistration:
@@ -70,7 +75,7 @@ async def add_employee_details(db: Session, tenant_employee_create:TenantEmploye
 
 def add_self_employed(db: Session, tenant_Self_employee_create:TenantSelfEmployedCreate) -> TenantSelfEmployed:
     self_emp = TenantSelfEmployed(
-        **tenant_Self_employee_create.model_dump(),
+        **tenant_self_employee_create.model_dump(),
         govt_id_proof = tenant_Self_employee_create.govt_id_proof.read()
     )
     db.add(self_emp)
