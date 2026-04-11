@@ -1,43 +1,31 @@
-from fastapi import APIRouter ,Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
-from datetime import timedelta
 from typing import Annotated
 
-from database.session import get_db
-from core.secure_logger import get_logger
-from middleware.attack_detector import detect_attack
-from .auth import detect_attack, db_dependency
-from models.tenant_registration_models import *
-from models.hostel_registration_models import *
-from models.auth_models import *
-from schemas.auth_schemas import *
-from schemas.hostel_registration_schemas import *
-from schemas.tenant_registration_schemas import *
-from core.security import (
-    authenticate_user,
-    get_current_user,
-    oauth2_bearer,
-    bcrypt_context,
-    get_password_hash
-)
+from fastapi import APIRouter, Depends, HTTPException, status
+
+from core.security import get_current_user, get_password_hash
+from models.auth_models import Warden
+from routers.auth import db_dependency, detect_attack
+from schemas.auth_schemas import Users
+from schemas.hostel_registration_schemas import HostelRegistration
+from schemas.tenant_registration_schemas import TenantRegistration
+
 router = APIRouter()
 user_dependency = Annotated[dict, Depends(get_current_user)]
 
-router.get('/get_tenant/{hostel_id}/{tenant_id}', status_code=status.HTTP_204_NO_CONTENT)
-async def get_hostel_tenants(db: db_dependency, current_user:user_dependency):
+@router.get('/get_tenant/{hostel_id}/{tenant_id}', status_code=status.HTTP_204_NO_CONTENT)
+async def get_hostel_tenants(db: db_dependency, current_user : user_dependency):
     detect_attack()
     if current_user is None or current_user.get('user_role') != 'admin':
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='user not found')
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
-    tenants = db.query(HostelRegistration).filter(HostelRegistration.hostel_id == user.hostel_id).filter(HostelRegistration.owner_id == current_user.get('user_id')).filter()
+    tenants = db.query(HostelRegistration).filter(HostelRegistration.hostel_id == user.hostel_id).filter(HostelRegistration.owner_id == current_user.get('user_id')).all()
     if tenants is None:
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
     return tenants
 
-router.delete('/delete_tenant/{hostel_id}/{tenant_id}')
+@router.delete('/delete_tenant/{hostel_id}/{tenant_id}')
 async def delete_tenant(db: db_dependency, current_user:user_dependency, tenant_id:str):
     detect_attack()
     if current_user is None or current_user.get('user_role') != 'admin':
@@ -46,7 +34,7 @@ async def delete_tenant(db: db_dependency, current_user:user_dependency, tenant_
     if user is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
     tenants = db.query(TenantRegistration).filter(TenantRegistration.hostel_id == user.hostel_id).filter(HostelRegistration.owner_id == current_user.get('user_id')).filter(TenantRegistration.tenant_id == tenant_id).first()
-    user_tenant = db.query(Users).filter(Users.user_id == tenants.tenant_id)
+    user_tenant = db.query(Users).filter(Users.user_id == tenants.tenant_id).first()
     if user_tenant is None:
          raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='detais not found')
     db.delete(user_tenant)
@@ -83,6 +71,6 @@ def warden_access(db:db_dependency, current_user:user_dependency, warden_access:
         hostel_id = user.hostel_id,
         user_role = 'warden',
         username = warden_access.username,
-        password = get_password_hash
+        password=get_password_hash(warden_access.password)
     )
     return warden
