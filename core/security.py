@@ -18,7 +18,7 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/token")
 password_hash = PasswordHash.recommended()
 logger = get_logger("security")
 SECRET_KEY = '197b2c37c391bed93fe80344fe73b806947a65e36206e05a1a23c2fa12702fe3'
-ALGORITHM = 'RS256'
+ALGORITHM = 'HS256'
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt_context.verify(plain_password, hashed_password)
