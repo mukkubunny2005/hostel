@@ -1,45 +1,48 @@
-from pydantic import BaseModel
-from fastapi import Depends, UploadFile, File, Form, Path
 import datetime
-from schemas.tenant_registration_schemas import *
-from settings.dependencies import *
+
+from fastapi import Depends, Form, Path, UploadFile
+from pydantic import BaseModel
+
+from models.enums import FoodEnum, GenderEnum, GovtIDEnum, NecessityEnum, RoomEnum
+from settings.dependencies import validate_file_security
+
 
 class TenantCreate(BaseModel):
-    tenant_id : str = Form(...,)
-    first_name: str = Form(min_length=1, max_length=20),
-    last_name: str = Form(min_length=1, max_length=20),
+    tenant_id : str = Form(...)
+    first_name: str = Form(min_length=1, max_length=20)
+    last_name: str = Form(min_length=1, max_length=20)
 
-    user_name: str = Form(...,min_length=5, max_length=200),
+    user_name: str = Form(..., min_length=5, max_length=200)
     password: str = Form(min_length=6)
     
-    phone_number: int = Form(min_length=10),
-    father_name: str = Form(min_length=1, max_length=200),
-    father_phone_number: str = Form(max_length=10),
-    gender: GenderEnum = Form(...),
-    date_of_birth: datetime.date = Form(...),
-    address: str = Form(min_length=5, max_length=1000),
-    house_no: str = Form(min_length=1, max_length=50),
-    street: str = Form(min_length=1, max_length=200),
-    colony: str = Form(min_length=1, max_length=200),
-    landmark: str = Form(min_length=0, max_length=200),
-    city: str = Form(min_length=1, max_length=100),
-    state: str = Form(min_length=1, max_length=100),
-    pincode: str = Form(min_length=4, max_length=12),
-    country: str = Form("India", min_length=2, max_length=100),
-    govt_id_type: GovtIDEnum = Form(...),
-    govt_id_number: str = Form(min_length=4, max_length=100),
+    phone_number: int = Form(min_length=10)
+    father_name: str = Form(min_length=1, max_length=200)
+    father_phone_number: str = Form(max_length=10)
+    gender: GenderEnum = Form(...)
+    date_of_birth: datetime.date = Form(...)
+    address: str = Form(min_length=5, max_length=1000)
+    house_no: str = Form(min_length=1, max_length=50)
+    street: str = Form(min_length=1, max_length=200)
+    colony: str = Form(min_length=1, max_length=200)
+    landmark: str = Form(min_length=0, max_length=200)
+    city: str = Form(min_length=1, max_length=100)
+    state: str = Form(min_length=1, max_length=100)
+    pincode: str = Form(min_length=4, max_length=12)
+    country: str = Form("India", min_length=2, max_length=100)
+    govt_id_type: GovtIDEnum = Form(...)
+    govt_id_number: str = Form(min_length=4, max_length=100)
     
-    emergency_contact: str = Form(min_length=7, max_length=15),
-    food_preference: FoodEnum = Form(...),
-    room_type: RoomEnum = Form(...),
+    emergency_contact: str = Form(min_length=7, max_length=15)
+    food_preference: FoodEnum = Form(...)
+    room_type: RoomEnum = Form(...)
 
-    govt_id_file: UploadFile = Depends(validate_file_security),
+    govt_id_file: UploadFile = Depends(validate_file_security)
     
-    necessity: NecessityEnum = Form(...,),
+    necessity: NecessityEnum = Form(...)
     model_config = {
         "str_strip_whitespace": True,   
         "extra": "allow",         
-        "from_attributes": True         
+        "from_attributes": True,     
     }
 
 class TenantStudentCreate(BaseModel):
@@ -55,7 +58,7 @@ class TenantStudentCreate(BaseModel):
     model_config = {
         "str_strip_whitespace": True,   
         "extra": "allow",         
-        "from_attributes": True         
+        "from_attributes": True, 
     }
 
 
@@ -67,11 +70,11 @@ class TenantEmployeeCreate(BaseModel):
     city: str
     pincode: str
     phone_number: str
-    id_card_image: UploadFile = Depends(validate_file_security),
+    id_card_image: UploadFile = Depends(validate_file_security)
     model_config = {
         "str_strip_whitespace": True,   
         "extra": "allow",         
-        "from_attributes": True         
+        "from_attributes": True,     
     }
 
 class TenantSelfEmployedCreate(BaseModel):
