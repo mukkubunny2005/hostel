@@ -3,7 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from typing import Annotated
-from database.session import get_db
+from database.db import get_db
 from core.secure_logger import get_logger
 from middleware.attack_detector import detect_attack
 
