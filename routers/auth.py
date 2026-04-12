@@ -5,7 +5,6 @@ from datetime import timedelta
 from typing import Annotated
 from database.db import get_db
 from core.secure_logger import get_logger
-from middleware.attack_detector import detect_attack
 
 from core.security import (
     authenticate_user,
@@ -58,7 +57,6 @@ logger = get_logger("auth")
 
 @router.post("/token", response_model=Token)
 async def login_for_access_token(db: db_dependency, form_data: Annotated[OAuth2PasswordRequestForm ,Depends()], ) -> Token:
-    detect_attack()
     user = authenticate_user(db=db, username=form_data.username, password=form_data.password)
     if not user:
         logger.warning('invalid credientials')
