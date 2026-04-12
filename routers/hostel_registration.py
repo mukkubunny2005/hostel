@@ -4,8 +4,7 @@ from typing import Annotated
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.exc import SQLAlchemyError
 from sqlalchemy.orm import Session
-
-from database.session import get_db
+from database.db import get_db
 from models.hostel_registration_models import HostelRegistrationRequest
 from services import hostel_registration_services as hostel_services
 
