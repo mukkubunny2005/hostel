@@ -6,7 +6,6 @@ from passlib.context import CryptContext
 from fastapi import Depends, HTTPException, Request, status
 from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
-from core.audit_logger import get_audit_logger
 from core.secure_logger import get_logger
 from middleware.attack_detector import detect_attack
 
@@ -16,7 +15,7 @@ from pwdlib import PasswordHash
 bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/token")
 password_hash = PasswordHash.recommended()
-logger = get_logger("security")
+
 SECRET_KEY = '197b2c37c391bed93fe80344fe73b806947a65e36206e05a1a23c2fa12702fe3'
 ALGORITHM = 'HS256'
 
@@ -43,9 +42,8 @@ def create_access_token(subject: str, user_id: str, expires_delta: Optional[time
     else:
         expire = datetime.now(timezone.utc) + timedelta(minutes=10)
 
-    audit_logger.warning(f"Created access token: subject={subject}, user_id={user_id}, exp={expire.isoformat()}")
     to_encode.update({"exp": expire})
-    audit_logger.warning(f'token updated with : {expire}')
+    
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
