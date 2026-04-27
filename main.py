@@ -13,7 +13,6 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-# ✅ Middleware order: RateLimit -> Auth
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(SecureMiddleware)
 
