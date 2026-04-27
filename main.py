@@ -1,5 +1,6 @@
 from fastapi import FastAPI, Request
-from middleware.request_trace import RequestTraceMiddleware
+from middleware.secure_middleware import SecureMiddleware
+from middleware.rate_limit import RateLimitMiddleware
 from routers import tenant_registration, hostel_registration, auth, owner
 from database.database import Base, engine
 import time
@@ -12,7 +13,9 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
-app.add_middleware(RequestTraceMiddleware)
+# ✅ Middleware order: RateLimit -> Auth
+app.add_middleware(RateLimitMiddleware)
+app.add_middleware(SecureMiddleware)
 
 @app.middleware('http')
 async def add_process_time_header(request: Request, call_next):
