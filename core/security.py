@@ -8,6 +8,10 @@ from fastapi.security import OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from core.secure_logger import get_logger
 from middleware.attack_detector import detect_attack
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 from schemas.auth_schemas import Users
 from pwdlib import PasswordHash
@@ -16,8 +20,15 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/token")
 password_hash = PasswordHash.recommended()
 
-SECRET_KEY = '197b2c37c391bed93fe80344fe73b806947a65e36206e05a1a23c2fa12702fe3'
+# FIX 1: Use environment variable instead of hardcoded SECRET_KEY
+SECRET_KEY = os.getenv("SECRET_KEY")
+if not SECRET_KEY:
+    raise ValueError("SECRET_KEY environment variable is not set. Please set it in .env file")
+
 ALGORITHM = 'HS256'
+
+# Initialize logger
+logger = get_logger("security")
 
 def verify_password(plain_password: str, hashed_password: str) -> bool:
     return bcrypt_context.verify(plain_password, hashed_password)
@@ -25,7 +36,7 @@ def verify_password(plain_password: str, hashed_password: str) -> bool:
 def get_password_hash(password: str) -> str:
     return bcrypt_context.hash(password)
 
-def authenticate_user(db: Session, username: str, password: str) -> Users:
+def authenticate_user(db: Session, username: str, password: str) -> Optional[Users]:
     user = db.query(Users).filter(Users.username == username).first()
     if not user:
         return None
@@ -36,7 +47,6 @@ def authenticate_user(db: Session, username: str, password: str) -> Users:
 
 def create_access_token(subject: str, user_id: str, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = {"sub": subject, "user_id": user_id}
-    audit_logger = get_audit_logger()
     if expires_delta:
         expire = datetime.now(timezone.utc) + expires_delta
     else:
@@ -47,12 +57,13 @@ def create_access_token(subject: str, user_id: str, expires_delta: Optional[time
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
 
+# FIX 2: Async function with proper error handling and logging
 async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], request: Request) -> dict:
     await detect_attack(request)
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
-        headers={'www-Authenticate': 'Bearer'}
+        headers={'WWW-Authenticate': 'Bearer'}  # FIX: Fixed header name from 'www-Authenticate' to 'WWW-Authenticate'
     )
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
@@ -61,18 +72,18 @@ async def get_current_user(token: Annotated[str, Depends(oauth2_bearer)], reques
         user_id: str = payload.get("user_id")
         hostel_id: str = payload.get('hostel_id')
 
-        if username is None or user_id is None or hostel_id is None:
-            logger.warning('could not get user')
+        if username is None or user_id is None:
+            logger.warning('Could not extract required claims from token')
             raise credentials_exception
         
-        return {"username": username, "id": user_id, "user_role" : user_role}
+        logger.info(f'User {username} authenticated successfully')
+        return {"username": username, "id": user_id, "user_role": user_role, "hostel_id": hostel_id}
     except JWTError as e:
-        logger.error(e)
+        logger.error(f'JWT validation error: {str(e)}')
         raise credentials_exception
 
-async def get_current_active_user(current_user : dict = Annotated[Users, Depends(get_current_user)]):
+async def get_current_active_user(current_user: dict = Annotated[dict, Depends(get_current_user)]) -> dict:
     if current_user is None:
-        logger.error('unable to get user')
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='inactive user')
+        logger.error('Could not retrieve user from token')
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail='User is inactive or not found')
     return current_user
-
