@@ -1,23 +1,23 @@
 import datetime
 
-from fastapi import Depends, Form, Path, UploadFile
-from pydantic import BaseModel
+from fastapi import Depends, Form, UploadFile
+from pydantic import BaseModel, Field
 
 from models.enums import FoodEnum, GenderEnum, GovtIDEnum, NecessityEnum, RoomEnum
 from settings.dependencies import validate_file_security
 
 
 class TenantCreate(BaseModel):
-    tenant_id : str = Form(...)
+    tenant_id: str = Form(...)
     first_name: str = Form(min_length=1, max_length=20)
     last_name: str = Form(min_length=1, max_length=20)
 
     user_name: str = Form(..., min_length=5, max_length=200)
     password: str = Form(min_length=6)
     
-    phone_number: int = Form(min_length=10)
+    phone_number: str = Form(min_length=10, max_length=15)
     father_name: str = Form(min_length=1, max_length=200)
-    father_phone_number: str = Form(max_length=10)
+    father_phone_number: str = Form(max_length=15)
     gender: GenderEnum = Form(...)
     date_of_birth: datetime.date = Form(...)
     address: str = Form(min_length=5, max_length=1000)
@@ -46,15 +46,15 @@ class TenantCreate(BaseModel):
     }
 
 class TenantStudentCreate(BaseModel):
-    hostel_id: str 
-    tenant_id: str
-    studying_at: str
-    student_id_number: str
-    college_address: str
-    city: str
-    pincode: str
-    phone_number: str
-    id_card_photo: UploadFile = Depends(validate_file_security),
+    hostel_id: str = Form(...)
+    tenant_id: str = Form(...)
+    studying_at: str = Form(...)
+    student_id_number: str = Form(...)
+    college_address: str = Form(...)
+    city: str = Form(...)
+    pincode: str = Form(...)
+    phone_number: str = Form(min_length=10, max_length=15)
+    id_card_photo: UploadFile = Depends(validate_file_security)
     model_config = {
         "str_strip_whitespace": True,   
         "extra": "allow",         
@@ -63,13 +63,13 @@ class TenantStudentCreate(BaseModel):
 
 
 class TenantEmployeeCreate(BaseModel):
-    tenant_id: str
-    company_name: str
-    employee_id_number: str
-    address: str
-    city: str
-    pincode: str
-    phone_number: str
+    tenant_id: str = Form(...)
+    company_name: str = Form(...)
+    employee_id_number: str = Form(...)
+    address: str = Form(...)
+    city: str = Form(...)
+    pincode: str = Form(...)
+    phone_number: str = Form(min_length=10, max_length=15)
     id_card_image: UploadFile = Depends(validate_file_security)
     model_config = {
         "str_strip_whitespace": True,   
@@ -78,9 +78,9 @@ class TenantEmployeeCreate(BaseModel):
     }
 
 class TenantSelfEmployedCreate(BaseModel):
-    tenant_id: str
-    occupation: str
-    phone_number: int = Path(lt=10)
+    tenant_id: str = Form(...)
+    occupation: str = Form(...)
+    phone_number: str = Form(min_length=10, max_length=15)
     govt_id_proof: UploadFile = Depends(validate_file_security)
     model_config = {
         "str_strip_whitespace": True,   
@@ -89,14 +89,12 @@ class TenantSelfEmployedCreate(BaseModel):
     }
 
 class TenantOtherCreate(BaseModel):
-    tenant_id: str
-    description: str
-    phone_number: int = Path(lt=10)
+    tenant_id: str = Form(...)
+    description: str = Form(...)
+    phone_number: str = Form(min_length=10, max_length=15)
     govt_id_proof: UploadFile = Depends(validate_file_security)
     model_config = {
         "str_strip_whitespace": True,   
         "extra": "allow",         
         "from_attributes": True         
     }
-
-

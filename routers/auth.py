@@ -59,10 +59,10 @@ logger = get_logger("auth")
 async def login_for_access_token(db: db_dependency, form_data: Annotated[OAuth2PasswordRequestForm ,Depends()], ) -> Token:
     user = authenticate_user(db=db, username=form_data.username, password=form_data.password)
     if not user:
-        logger.warning('invalid credientials')
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password", headers={"www-Authenticate": "Baarer"})
+        logger.warning('invalid credentials')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect username or password", headers={"WWW-Authenticate": "Bearer"})
     token = auth_services.create_token(db, user, timedelta(minutes=20))
-    logger.info('token created : {token}')
+    logger.info(f'token created: {token}')
     return {
         "access_token": token,
         "token_type": "bearer",
@@ -81,20 +81,29 @@ async def change_password(
     if current_user is None:
         logger.error('could not find user')
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Authentication Failed")
+    
     user = db.query(Users).filter(Users.user_id == current_user.get('user_id')).first()
-    if bcrypt_context.verify(user_verification.old_password ,user.password) is None:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="error on password change")
     
-    ok = user.password = get_password_hash(user_verification.new_password)
+    if not user:
+        logger.error('user not found')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="User not found")
     
-    if not ok:
-        logger.error('password is not changed at this time')
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect current password or user not found")
-    db.add(user)
-    db.commit()
-    db.refresh(user)
-    logger.info('password changed successfully')
-    return {"msg": "password changed successfully"}
+    if not bcrypt_context.verify(user_verification.old_password, user.password):
+        logger.warning('incorrect old password provided')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Incorrect current password")
+    
+    user.password = get_password_hash(user_verification.new_password)
+    
+    try:
+        db.add(user)
+        db.commit()
+        db.refresh(user)
+        logger.info('password changed successfully')
+        return {"msg": "password changed successfully"}
+    except Exception as e:
+        db.rollback()
+        logger.error(f'password change failed: {str(e)}')
+        raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to change password")
 
 
 @router.delete('/logout')
@@ -120,5 +129,3 @@ async def logout(
         raise HTTPException(status_code=status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to logout user")
     logger.info('user logged out successfully')
     return {'msg': 'user logged out successfully'}
-
-

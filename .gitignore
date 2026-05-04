@@ -8,11 +8,38 @@ __pycache__/
 
 # Environment variables
 .env
+.env.local
+.env.*.local
 
 # IDE
 .vscode/
 .idea/
+*.swp
+*.swo
+*~
 
 # OS files
 Thumbs.db
 .DS_Store
+
+# Security files
+core/log.key
+*.key
+*.pem
+secrets/
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Logs
+logs/
+encrypted_logs/
+secure_logs/
+*.log
+*.log.enc
+
+# Upload directories
+secure_storage/
+uploads/
