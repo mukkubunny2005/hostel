@@ -21,11 +21,13 @@ oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/token")
 password_hash = PasswordHash.recommended()
 
 # FIX 1: Use environment variable instead of hardcoded SECRET_KEY
-SECRET_KEY = os.getenv("SECRET_KEY")
+
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY environment variable is not set. Please set it in .env file")
 
-ALGORITHM = 'HS256'
+from core.config import settings
+
+settings.SECRET_KEY
 
 # Initialize logger
 logger = get_logger("security")
