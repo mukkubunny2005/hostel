@@ -1,5 +1,5 @@
 from sqlalchemy import Column, String, Enum, ForeignKey, LargeBinary, Date, Integer
-from database.database import Base
+from database.db import Base
 from models.enums import GenderEnum, FoodEnum, GovtIDEnum, NecessityEnum, RoomEnum
 
 class TenantRegistration(Base):
