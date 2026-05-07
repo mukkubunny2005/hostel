@@ -5,7 +5,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from sqlalchemy.exc import SQLAlchemyError
 from database.db import get_db
-from models.tenant_Registration_models import TenantCreate
+from models.tenant_registration_models import TenantCreate
 from services import tenant_registration_Services as tenant_services
 
 router = APIRouter()

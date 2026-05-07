@@ -5,6 +5,7 @@ from routers import tenant_registration, hostel_registration, auth, owner
 from database.database import Base, engine
 import time
 from contextlib import asynccontextmanager
+from fastapi.middleware.cors import CORSMiddleware
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -15,6 +16,13 @@ app = FastAPI(lifespan=lifespan)
 
 app.add_middleware(RateLimitMiddleware)
 app.add_middleware(SecureMiddleware)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 @app.middleware('http')
 async def add_process_time_header(request: Request, call_next):
@@ -28,3 +36,4 @@ app.include_router(hostel_registration.router)
 app.include_router(tenant_registration.router)
 app.include_router(auth.router)
 app.include_router(owner.router)
+

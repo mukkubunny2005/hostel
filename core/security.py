@@ -20,7 +20,6 @@ bcrypt_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_bearer = OAuth2PasswordBearer(tokenUrl="/token")
 password_hash = PasswordHash.recommended()
 
-# FIX 1: Use environment variable instead of hardcoded SECRET_KEY
 
 if not SECRET_KEY:
     raise ValueError("SECRET_KEY environment variable is not set. Please set it in .env file")

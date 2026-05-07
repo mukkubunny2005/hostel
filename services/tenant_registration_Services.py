@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-from models.tenant_Registration_models import (
+from models.tenant_registration_models import (
     TenantCreate,
     TenantEmployeeCreate,
     TenantOtherCreate,
